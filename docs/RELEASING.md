@@ -71,8 +71,7 @@ It then runs `lintRelease` and `assembleRelease`, checks the APK is v2-signed **
 |---|---|
 | `warden.apk` | The app. The only APK, so Obtainium needs no filter. |
 | `warden.apk.sha256` | Checksum users can verify. Also at a fixed URL, `releases/latest/download/warden.apk.sha256`, for anything that shows the current checksum. |
-
-There is no mapping file: release builds keep real class and method names (`-dontobfuscate` in `app/proguard-rules.pro`), so stack traces from user reports read as-is. 1.0.0 was obfuscated; its mapping is attached to that release.
+| `warden-mapping.txt` | R8 mapping, to read stack traces from user reports. Each release keeps its own copy; `dist/` only holds the latest. |
 
 The release notes are that version's changelog section, plus a link to the one-time setup, the checksum and the certificate fingerprint. Only the title and notes can be edited afterwards.
 

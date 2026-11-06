@@ -51,6 +51,7 @@ fi
 ./gradlew --no-daemon clean lintRelease assembleRelease
 
 APK="app/build/outputs/apk/release/app-release.apk"
+MAPPING="app/build/outputs/mapping/release/mapping.txt"
 [[ -f "$APK" ]] || die "no signed release APK at $APK"
 
 # --- verify the signature ----------------------------------------------------------------------
@@ -67,6 +68,7 @@ mkdir -p dist
 OUT="dist/warden.apk"
 cp "$APK" "$OUT"
 (cd dist && shasum -a 256 "warden.apk" > "warden.apk.sha256")
+[[ -f "$MAPPING" ]] && cp "$MAPPING" "dist/warden-mapping.txt"
 SHA=$(cut -d' ' -f1 "$OUT.sha256")
 echo "release: built $OUT"
 echo "release: sha256 $SHA"
@@ -92,5 +94,7 @@ BODY="$NOTES
 
 git tag -a "$TAG" -m "Warden $VERSION"
 git push origin "$TAG"
-gh release create "$TAG" "$OUT" "$OUT.sha256" --verify-tag --title "Warden $VERSION" --notes "$BODY"
+ASSETS=("$OUT" "$OUT.sha256")
+[[ -f "dist/warden-mapping.txt" ]] && ASSETS+=("dist/warden-mapping.txt")
+gh release create "$TAG" "${ASSETS[@]}" --verify-tag --title "Warden $VERSION" --notes "$BODY"
 echo "release: published $TAG"

@@ -70,13 +70,20 @@ It then runs `lintRelease` and `assembleRelease`, checks the APK is v2-signed **
 | Asset | Purpose |
 |---|---|
 | `warden.apk` | The app. The only APK, so Obtainium needs no filter. |
-| `warden.apk.sha256` | Checksum users can verify. |
-| `warden-mapping.txt` | R8 mapping, to read stack traces from user reports. Each release keeps its own copy; `dist/` only holds the latest. |
+| `warden.apk.sha256` | Checksum users can verify. Also at a fixed URL, `releases/latest/download/warden.apk.sha256`, for anything that shows the current checksum. |
 
-The release notes are that version's changelog section, plus the checksum and certificate fingerprint.
+There is no mapping file: release builds keep real class and method names (`-dontobfuscate` in `app/proguard-rules.pro`), so stack traces from user reports read as-is. 1.0.0 was obfuscated; its mapping is attached to that release.
+
+The release notes are that version's changelog section, plus a link to the one-time setup, the checksum and the certificate fingerprint. Only the title and notes can be edited afterwards.
+
+Releases are **immutable** (repository setting): once published, the assets can't be replaced and the tag can't be moved or deleted. GitHub also signs a release attestation, so anyone can check a download is the published file:
+
+```bash
+gh release verify-asset vX.Y.Z warden.apk
+```
 
 ## 🧯 If something goes wrong
 
-- **Wrong release published:** delete it with `gh release delete vX.Y.Z` and the tag with `git push --delete origin vX.Y.Z`, then release a **new patch version**. Never reuse a version number: installed copies and Obtainium have already seen it.
-- **Tag pushed, but creating the release failed** (network or `gh` error): if nothing shows on the Releases page, nobody has seen the version, so it's safe to reuse. Remove the tag with `git push --delete origin vX.Y.Z && git tag -d vX.Y.Z`, plus any half-made draft with `gh release delete vX.Y.Z`, fix the cause and run the script again. If the release did get published, treat it as **Wrong release published** above.
+- **Wrong release published:** its files and tag are locked, so don't try to fix it in place. Release a **new patch version** with the fix, and edit the bad release's notes to say which version replaces it. Never reuse a version number: installed copies and Obtainium have already seen it.
+- **Tag pushed, but creating the release failed** (network or `gh` error): only a published release is locked. If nothing shows on the Releases page, nobody has seen the version, so it's safe to reuse. Remove the tag with `git push --delete origin vX.Y.Z && git tag -d vX.Y.Z`, plus any half-made draft with `gh release delete vX.Y.Z`, fix the cause and run the script again. If the release did get published, treat it as **Wrong release published** above.
 - **Script refuses the certificate:** the build picked up a different key. Check `~/.android/keystores/warden/signing.env` before doing anything else.

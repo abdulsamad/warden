@@ -51,7 +51,6 @@ fi
 ./gradlew --no-daemon clean lintRelease assembleRelease
 
 APK="app/build/outputs/apk/release/app-release.apk"
-MAPPING="app/build/outputs/mapping/release/mapping.txt"
 [[ -f "$APK" ]] || die "no signed release APK at $APK"
 
 # --- verify the signature ----------------------------------------------------------------------
@@ -68,7 +67,6 @@ mkdir -p dist
 OUT="dist/warden.apk"
 cp "$APK" "$OUT"
 (cd dist && shasum -a 256 "warden.apk" > "warden.apk.sha256")
-[[ -f "$MAPPING" ]] && cp "$MAPPING" "dist/warden-mapping.txt"
 SHA=$(cut -d' ' -f1 "$OUT.sha256")
 echo "release: built $OUT"
 echo "release: sha256 $SHA"
@@ -87,14 +85,12 @@ fi
 BODY="$NOTES
 
 ---
-**Install:** download \`warden.apk\`, then run the one-time grant from the README.
+**Install:** download \`warden.apk\`, then run the [one-time grant](https://github.com/abdulsamad/warden#-one-time-setup) from the README.
 
 **SHA-256** of \`warden.apk\`: \`$SHA\`
 **Signing certificate SHA-256:** \`$EXPECTED_CERT_SHA256\`"
 
 git tag -a "$TAG" -m "Warden $VERSION"
 git push origin "$TAG"
-ASSETS=("$OUT" "$OUT.sha256")
-[[ -f "dist/warden-mapping.txt" ]] && ASSETS+=("dist/warden-mapping.txt")
-gh release create "$TAG" "${ASSETS[@]}" --verify-tag --title "Warden $VERSION" --notes "$BODY"
+gh release create "$TAG" "$OUT" "$OUT.sha256" --verify-tag --title "Warden $VERSION" --notes "$BODY"
 echo "release: published $TAG"

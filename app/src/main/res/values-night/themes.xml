@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Dark mode: a dark platform theme, so the window behind Compose is black (matching the
+        true-black UI) instead of light. That window shows for a frame whenever the activity is
+        recreated, as on rotation or fold/unfold, and in dark mode it would flash white.
+    -->
+    <style name="Theme.Warden" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+</resources>

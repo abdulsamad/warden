@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Deep navy from the icon gradient; used full-bleed on the splash in light and dark mode. -->
+    <color name="splash_background">#131D5E</color>
+    <!-- Brand accent, used to tint the notification. -->
+    <color name="warden_accent">#2F4DD8</color>
+</resources>

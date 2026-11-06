@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Status-bar / notification small icon. Must be a white silhouette on transparent (the system
+    tints it). The 66-unit viewport frames the mark with ~2dp of padding at 24dp, per the
+    status-bar icon live area.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="66"
+    android:viewportHeight="66">
+    <group
+        android:translateX="-21"
+        android:translateY="-21.5">
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="@string/warden_mark_path" />
+    </group>
+</vector>

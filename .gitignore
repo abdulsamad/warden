@@ -1,0 +1,40 @@
+# Gradle and Kotlin
+.gradle/
+.kotlin/
+build/
+
+# Android Studio
+*.iml
+/.idea/
+/captures/
+/local.properties
+.externalNativeBuild/
+.cxx/
+
+# Build outputs. Releases are built into dist/ by scripts/release.sh and uploaded from there;
+# Android Studio's "Generate Signed App Bundle / APK" writes to app/release/.
+*.apk
+*.aab
+*.ap_
+/app/release/
+/dist/
+
+# Heap dumps and JVM crash logs
+*.hprof
+hs_err_pid*.log
+replay_pid*.log
+
+# Signing secrets: never commit. The release keystore lives in ~/.android/keystores/warden/.
+*.jks
+*.keystore
+*.p12
+keystore.properties
+signing.env
+
+# OS
+.DS_Store
+
+# Local AI and code-navigation tooling (per machine)
+/.claude/
+/.serena/
+/graphify-out/

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Protected launch widget on phones: about a launcher icon in a 1x1 cell. -->
+    <dimen name="widget_icon_frame">48dp</dimen>
+    <dimen name="widget_icon">44dp</dimen>
+    <dimen name="widget_badge">18dp</dimen>
+    <dimen name="widget_badge_padding">3dp</dimen>
+    <dimen name="widget_label_text">12sp</dimen>
+</resources>

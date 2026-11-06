@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Pre-Android-12 splash: brand background with the centered mark. The 108-unit foreground is
+    drawn at 288dp - the same size Android 12+ uses for a splash icon without a background - so the
+    splash looks identical on every supported version.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/splash_background" />
+    <item
+        android:width="288dp"
+        android:height="288dp"
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:gravity="center" />
+</layer-list>

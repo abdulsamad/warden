@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Warden</string>
+
+    <!-- Shared across features. Feature-specific strings live in strings_<feature>.xml. -->
+    <string name="protection_usb_debugging">USB debugging</string>
+    <string name="protection_developer_options">Developer options</string>
+    <string name="protection_accessibility">Accessibility services</string>
+</resources>

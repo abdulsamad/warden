@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Warden mark: a shield holding a switch in the "off" position - it guards the device by
+    switching risky settings off. One evenOdd path: shield (filled), switch track (cut out),
+    knob (filled again). Scaled to 86% around the center so it sits comfortably inside the
+    adaptive-icon safe zone and the Android 12 splash circle.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.86"
+        android:scaleY="0.86">
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="@string/warden_mark_path" />
+    </group>
+</vector>

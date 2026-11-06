@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tablets and unfolded foldables: launchers draw bigger icons in bigger cells. The widget is
+         inflated with the device's own configuration, so this follows folding and unfolding. -->
+    <dimen name="widget_icon_frame">60dp</dimen>
+    <dimen name="widget_icon">56dp</dimen>
+    <dimen name="widget_badge">22dp</dimen>
+    <dimen name="widget_badge_padding">4dp</dimen>
+    <dimen name="widget_label_text">14sp</dimen>
+</resources>

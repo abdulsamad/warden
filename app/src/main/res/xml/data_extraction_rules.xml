@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Exclude everything from cloud backup AND device-to-device transfer (Android 12+).
+    The persisted settings snapshot is device-specific: carried to another phone, Recovery would
+    "restore" stale values there (e.g. re-enable USB debugging). allowBackup="false" alone does not
+    stop device-to-device transfers on Android 12+, hence these rules.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="root" />
+        <exclude domain="file" />
+        <exclude domain="database" />
+        <exclude domain="sharedpref" />
+        <exclude domain="external" />
+    </device-transfer>
+</data-extraction-rules>

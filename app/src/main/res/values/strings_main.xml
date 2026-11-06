@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Status card -->
+    <string name="main_status_finish_setup">Finish setup</string>
+    <string name="main_status_setup_hint">Warden needs these before it can start:</string>
+    <string name="main_missing_usage">Grant usage access</string>
+    <string name="main_missing_adb">Allow switching settings (one-time grant)</string>
+    <string name="main_missing_targets">Pick at least one app to watch</string>
+    <string name="main_missing_a11y">Choose accessibility services, or turn that protection off</string>
+
+    <string name="main_status_off_title">Monitor off</string>
+    <plurals name="main_status_ready">
+        <item quantity="one">Ready to watch %1$d app.</item>
+        <item quantity="other">Ready to watch %1$d apps.</item>
+    </plurals>
+
+    <string name="main_status_paused_title">Paused until %1$s</string>
+    <string name="main_status_paused_screen_off_title">Paused until screen off</string>
+    <string name="main_status_paused_desc">Nothing is switched off while paused.</string>
+
+    <string name="main_status_starting_title" tools:ignore="TypographyEllipsis">Starting...</string>
+    <string name="main_status_starting_desc">Getting ready to watch your apps.</string>
+
+    <plurals name="main_status_watching_title">
+        <item quantity="one">Watching %1$d app</item>
+        <item quantity="other">Watching %1$d apps</item>
+    </plurals>
+    <string name="main_status_watching_desc">Settings switch off when one opens and come back when you leave.</string>
+
+    <string name="main_status_protecting_title">Protecting %1$s</string>
+    <string name="main_status_protecting_desc">Settings stay off until you leave the app.</string>
+
+    <string name="main_action_start">Start monitor</string>
+    <string name="main_action_stop">Stop monitor</string>
+    <string name="main_action_pause">Pause</string>
+    <string name="main_pause_15_min">15 minutes</string>
+    <string name="main_pause_1_hour">1 hour</string>
+    <string name="main_pause_screen_off">Until the screen turns off</string>
+    <string name="main_action_resume">Resume now</string>
+
+    <string name="main_problem_restore">Couldn\'t turn %1$s back on - turn it on in Settings</string>
+    <string name="main_problem_open_settings">Open settings</string>
+    <string name="main_problem_last_session">Last session: couldn\'t turn off %1$s in %2$s. That app may still detect it.</string>
+
+    <string name="main_test_hint">Check that it works on this phone. Takes a few seconds.</string>
+    <string name="main_test_hint_dismiss">Not now</string>
+    <string name="main_test_hint_run">Test</string>
+
+    <!-- Recovery snackbar -->
+    <string name="main_recovery_ok">Restored your settings after Warden was stopped</string>
+    <string name="main_recovery_failed">Couldn\'t restore %1$s after Warden was stopped - check Settings</string>
+
+    <!-- Protections -->
+    <string name="main_protections_title">What to switch off</string>
+    <string name="main_protection_on">On now</string>
+    <string name="main_protection_off">Already off</string>
+    <string name="main_protection_unmanaged">Left as is</string>
+    <string name="main_a11y_choose_warning">Choose at least one service, or this toggle does nothing</string>
+    <string name="main_a11y_choose_button">Choose services</string>
+    <string name="main_a11y_pauses">Pauses: %1$s</string>
+    <string name="main_a11y_not_installed">%1$s (not installed)</string>
+    <string name="main_a11y_picker_title">Accessibility services</string>
+    <string name="main_a11y_all">All accessibility services</string>
+    <string name="main_a11y_all_desc">Every enabled service, including ones you turn on later</string>
+    <string name="main_a11y_done">Done</string>
+
+    <!-- Self-test -->
+    <string name="main_selftest_button">Test on this device</string>
+    <string name="main_selftest_title">Test on this device</string>
+    <string name="main_selftest_confirm_body">Briefly turns each managed setting off, checks it stuck, and turns it back on. An active ADB connection will drop for a moment.</string>
+    <string name="main_selftest_cancel">Cancel</string>
+    <string name="main_selftest_run">Run test</string>
+    <string name="main_selftest_running" tools:ignore="TypographyEllipsis">Testing your settings...</string>
+    <string name="main_selftest_done">Done</string>
+    <string name="main_selftest_ok">Works</string>
+    <string name="main_selftest_skipped">Not managed</string>
+    <string name="main_selftest_already_off">Already off</string>
+    <string name="main_selftest_disable_failed">This device blocked turning it off</string>
+    <string name="main_selftest_restore_failed">Turned off but couldn\'t turn it back on - check Settings</string>
+    <string name="main_selftest_busy">Can\'t test while a protected app is open.</string>
+    <string name="main_selftest_no_permission">Grant the ADB permission first.</string>
+    <string name="main_selftest_error">The test couldn\'t finish. Check Settings to make sure nothing was left off.</string>
+
+    <!-- Recent activity -->
+    <string name="main_activity_title">Recent activity</string>
+    <string name="main_activity_empty">No sessions yet - they\'ll show up here after you open a watched app.</string>
+    <string name="main_activity_in_progress">In progress</string>
+    <string name="main_activity_when_duration">%1$s - %2$s</string>
+    <string name="main_activity_recovered">Recovered</string>
+    <string name="main_activity_turned_off">Turned off: %1$s</string>
+    <string name="main_activity_nothing_off">Nothing turned off</string>
+    <string name="main_activity_failed_disable">Couldn\'t turn off: %1$s</string>
+    <string name="main_activity_failed_restore">Couldn\'t turn back on: %1$s</string>
+    <string name="main_activity_show_all">Show all</string>
+    <string name="main_activity_show_less">Show less</string>
+    <string name="main_activity_clear">Clear</string>
+    <string name="main_activity_cleared">Activity cleared</string>
+    <string name="main_undo">Undo</string>
+    <string name="main_duration_seconds" tools:ignore="PluralsCandidate">%1$d sec</string>
+    <string name="main_duration_minutes">%1$d min</string>
+    <string name="main_duration_hours_minutes">%1$d h %2$d min</string>
+</resources>

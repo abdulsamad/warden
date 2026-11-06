@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- In the launcher's widget list -->
+    <string name="widget_label">Protected launch</string>
+    <string name="widget_description">Opens a watched app with its settings already off. For apps that check the moment they open.</string>
+    <string name="widget_preview_label">Your app</string>
+
+    <!-- On the home screen -->
+    <string name="widget_open_cd">Open %1$s with protection</string>
+    <string name="widget_choose">Choose app</string>
+    <string name="widget_choose_cd">Protected launch widget. Choose an app.</string>
+
+    <!-- App picker, when placing the widget or when its app is gone -->
+    <string name="widget_config_title">Choose an app</string>
+    <string name="widget_config_close_cd">Close</string>
+    <string name="widget_config_lead">The widget switches settings off first, then opens the app. Use it for apps that still complain when opened from their own icon.</string>
+    <string name="widget_config_empty">No apps to watch yet. Add them in Warden, then add the widget again.</string>
+    <string name="widget_config_open_warden">Open Warden</string>
+
+    <!-- From Apps to watch: placing a widget from inside Warden -->
+    <string name="widget_add">Add home screen widget</string>
+    <string name="widget_add_hint">App still complains? Add a Warden widget for it here and always open the app from that widget, not its own icon from the drawer.</string>
+    <string name="widget_add_choose_title">Add a widget for</string>
+    <string name="widget_add_for_cd">Add %1$s widget</string>
+    <string name="widget_add_cancel">Cancel</string>
+    <string name="widget_add_done">%1$s widget added to your home screen</string>
+
+    <!-- When the launcher can't place widgets for an app -->
+    <string name="widget_manual_title">Add it from your home screen</string>
+    <string name="widget_manual_step1">Long-press an empty spot on your home screen and tap Widgets.</string>
+    <string name="widget_manual_step2">Find Warden and drag Protected launch onto the home screen.</string>
+    <string name="widget_manual_step3">Pick the app.</string>
+    <string name="widget_manual_done">Got it</string>
+
+    <!-- Tapping the widget when Warden can't protect: the app still opens, as its icon would -->
+    <string name="launch_not_installed">That app isn\'t installed anymore.</string>
+    <string name="launch_cant_open">Can\'t open %1$s. It may be turned off in Settings.</string>
+    <string name="launch_not_set_up">Warden isn\'t set up yet. Opening %1$s as usual.</string>
+    <string name="launch_monitor_off">Monitor is off. Opening %1$s as usual.</string>
+    <string name="launch_paused">Warden is paused. Opening %1$s as usual.</string>
+    <string name="launch_not_watched">%1$s isn\'t in Apps to watch. Opening it as usual.</string>
+    <string name="launch_timed_out">Couldn\'t switch settings off in time. Opening %1$s anyway.</string>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="targets_title">Apps to watch</string>
+    <plurals name="targets_selected_count">
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
+
+    <string name="targets_empty_description">Pick the apps that complain about these settings, like your banking or payment apps.</string>
+    <string name="targets_choose_apps">Choose apps</string>
+    <string name="targets_add_or_remove">Add or remove apps</string>
+
+    <string name="targets_chip_remove_cd">Remove %1$s</string>
+    <string name="targets_removed">Removed %1$s</string>
+    <string name="targets_chip_remove_not_installed_cd">Remove %1$s, not installed</string>
+    <string name="targets_chip_not_installed">%1$s (Not installed)</string>
+
+    <string name="targets_search_placeholder">Search apps</string>
+    <string name="targets_search_clear_cd">Clear search</string>
+    <string name="targets_section_selected">Selected</string>
+    <string name="targets_section_all">All apps</string>
+    <string name="targets_no_match">No apps match \"%1$s\"</string>
+    <string name="targets_loading">Loading apps</string>
+    <string name="targets_done">Done</string>
+</resources>

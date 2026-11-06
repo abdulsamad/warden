@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Protected launch widget: the app's own icon with a small Warden badge, so it reads as "this app,
+    opened through Warden". The defaults here also draw the widget picker's preview (Android 12+).
+    Sized to fit a 1x1 cell, label included; bigger on tablets and unfolded foldables
+    (values-sw600dp). On Android 12+ LaunchWidgets also offers an icon-only version, used when a
+    cell is too short for the label.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <FrameLayout
+        android:layout_width="@dimen/widget_icon_frame"
+        android:layout_height="@dimen/widget_icon_frame">
+
+        <ImageView
+            android:id="@+id/widget_icon"
+            android:layout_width="@dimen/widget_icon"
+            android:layout_height="@dimen/widget_icon"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
+            android:id="@+id/widget_badge"
+            android:layout_width="@dimen/widget_badge"
+            android:layout_height="@dimen/widget_badge"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/widget_badge_background"
+            android:importantForAccessibility="no"
+            android:padding="@dimen/widget_badge_padding"
+            android:src="@drawable/ic_stat_warden" />
+    </FrameLayout>
+
+    <!-- White with a shadow, like launcher labels, so it reads on any wallpaper. -->
+    <TextView
+        android:id="@+id/widget_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:shadowColor="#B3000000"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        android:text="@string/widget_preview_label"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/widget_label_text" />
+</LinearLayout>

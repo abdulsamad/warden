@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Android 12+: the platform splash-screen API. The system draws this before our process is
+        even ready and dismisses it on our first frame, so it adds zero latency. The icon has no
+        background layer, so the system renders it at 288dp inside a 192dp circle - the mark is
+        scaled to sit well within that circle.
+    -->
+    <style name="Theme.Warden.Splash" parent="Theme.Warden">
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+    </style>
+</resources>

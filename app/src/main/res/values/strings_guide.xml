@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_title">Help</string>
+    <string name="guide_open">Help</string>
+    <string name="guide_close_cd">Close help</string>
+    <string name="guide_done">Got it</string>
+
+    <!-- Restore promise (highlighted) -->
+    <string name="guide_restore_title">Everything comes back by itself</string>
+    <string name="guide_restore_lead">When a watched app opens, Warden really switches off Developer options, USB and wireless debugging, and accessibility apps. When you leave, it puts back exactly what was on.</string>
+    <string name="guide_restore_crash">Even after a crash or reboot, it restores from a saved copy.</string>
+    <string name="guide_restore_changes">Changes you make while a watched app is open are undone when you leave.</string>
+
+    <!-- One-time setup -->
+    <string name="guide_setup_title">Set up once</string>
+    <string name="guide_setup_grant">From a computer with adb, run this.</string>
+    <string name="guide_setup_shizuku">Rather skip the computer? On Android 11+, use Shizuku:</string>
+    <string name="guide_setup_usage">Allow Usage access.</string>
+    <string name="guide_setup_running">Do the Keep Warden running steps.</string>
+    <string name="guide_setup_apps">Add your apps and tap Start monitor.</string>
+    <string name="guide_setup_test">Tap Test on this device. Three ticks and you\'re done.</string>
+
+    <!-- Which apps -->
+    <string name="guide_targets_title">What to add</string>
+    <string name="guide_targets_lead">Any app that complains about developer options, USB debugging or accessibility. Usually banking, payment, trading, government and some game apps.</string>
+
+    <!-- Day to day -->
+    <string name="guide_daily_title">Day to day</string>
+    <string name="guide_daily_open">Open your app as usual. Settings switch off in about a second.</string>
+    <string name="guide_daily_pause">Need USB debugging in one of those apps? Tap Pause.</string>
+    <string name="guide_daily_alert">If something doesn\'t come back, you get an alert. Turn it on in Settings.</string>
+
+    <!-- Protected launch widget -->
+    <string name="guide_widget_title">Watched app still complains?</string>
+    <string name="guide_widget_lead">A few apps check before Warden can switch settings off, so opened from their own icon they still see them on. A Warden widget fixes this: it switches settings off first, then opens the app.</string>
+    <string name="guide_widget_add">Under Apps to watch, tap Add home screen widget and confirm.</string>
+    <string name="guide_widget_open">Always open the app from that widget, not its own icon from the drawer.</string>
+    <string name="guide_widget_close">If the app is already open, swipe it away in Recents first.</string>
+    <string name="guide_widget_note">Only needed for apps that still complain. Leaving the app restores everything as usual.</string>
+
+    <!-- Pro tips -->
+    <string name="guide_tips_title">Pro tips</string>
+    <string name="guide_tips_screen_off">Quick adb session? Pause until the screen turns off. It ends by itself.</string>
+    <string name="guide_tips_tile">Add the Warden Quick Settings tile. Long-press it to open the app.</string>
+    <string name="guide_tips_hide">Notification in the way? Tap Hide on it and turn off Monitor. Warden keeps working.</string>
+    <string name="guide_tips_recents">Lock Warden in Recents so Clear all never stops it.</string>
+
+    <!-- Troubleshooting -->
+    <string name="guide_trouble_title">Not working?</string>
+    <string name="guide_trouble_started">Check the top card says Watching. If it says Monitor off, tap Start monitor.</string>
+    <string name="guide_trouble_restricted">Usage access greyed out? In Warden\'s app settings, tap the three-dot menu, then Allow restricted settings.</string>
+    <string name="guide_trouble_listed">Make sure the app is in Apps to watch.</string>
+    <string name="guide_trouble_widget">App still complains? Add a Warden widget for it under Apps to watch, close the app fully, then always open it from that widget, not its own icon from the drawer.</string>
+    <string name="guide_trouble_a11y">Set accessibility back to All services.</string>
+    <string name="guide_trouble_test">Run Test on this device again after big updates.</string>
+    <string name="guide_trouble_root">Root or modified-system checks are beyond Warden.</string>
+    <string name="guide_trouble_uninstall">Uninstalling Warden while a watched app is open leaves those settings off.</string>
+</resources>

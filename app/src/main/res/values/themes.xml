@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Compose supplies the real theming; this just needs to be an ActionBar-less platform theme
+        whose window color matches. values-night has the dark one.
+    -->
+    <style name="Theme.Warden" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!--
+        Launch theme (Android 8-11): the window background IS the splash, so it appears the instant
+        the process starts, with no extra Activity and no delay. MainActivity swaps to
+        Theme.Warden in onCreate before drawing content.
+    -->
+    <style name="Theme.Warden.Splash" parent="Theme.Warden">
+        <item name="android:windowBackground">@drawable/splash_window</item>
+        <item name="android:statusBarColor">@color/splash_background</item>
+        <item name="android:navigationBarColor">@color/splash_background</item>
+    </style>
+
+    <!--
+        Protected launch trampoline: invisible, with no open animation, so tapping the widget looks
+        like opening the app itself. It finishes as soon as the app is launched.
+    -->
+    <style name="Theme.Warden.Invisible" parent="android:Theme.Translucent.NoTitleBar">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+</resources>

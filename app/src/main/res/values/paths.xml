@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Single source of truth for the Warden mark (108x108 icon coordinates), shared by the
+        launcher foreground, the themed-icon monochrome layer and the notification icon.
+        Subpaths: shield, switch track (hole via evenOdd), knob in the "off" position.
+    -->
+    <string name="warden_mark_path" translatable="false">M54,27 C60,31 67,33 75,34 L75,53 C75,67 66,76.5 54,82 C42,76.5 33,67 33,53 L33,34 C41,33 48,31 54,27 Z M48,46 L60,46 C64.4,46 68,49.6 68,54 C68,58.4 64.4,62 60,62 L48,62 C43.6,62 40,58.4 40,54 C40,49.6 43.6,46 48,46 Z M42.8,54 A5.2,5.2 0 1,0 53.2,54 A5.2,5.2 0 1,0 42.8,54 Z</string>
+</resources>

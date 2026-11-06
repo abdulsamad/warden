@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Notification channels -->
+    <!-- The channel name is the title of the screen the notification's Hide button opens, so it
+         carries the hint itself. -->
+    <string name="engine_channel_monitor">Monitor (safe to turn off)</string>
+    <string name="engine_channel_monitor_desc">Shows what Warden is doing. Turn it off to hide it - Warden keeps working.</string>
+    <string name="engine_channel_alerts">Alerts</string>
+    <string name="engine_channel_alerts_desc">Only when a setting couldn\'t be switched off or back on. Keep this on.</string>
+
+    <!-- Ongoing notification -->
+    <string name="engine_notif_starting">Starting</string>
+    <plurals name="engine_notif_watching">
+        <item quantity="one">Watching %d app</item>
+        <item quantity="other">Watching %d apps</item>
+    </plurals>
+    <string name="engine_notif_paused">Paused until %1$s</string>
+    <string name="engine_notif_paused_screen_off">Paused until the screen turns off</string>
+    <string name="engine_notif_protecting">Protecting %1$s</string>
+    <plurals name="engine_notif_protecting_count">
+        <item quantity="one">Protecting %1$s - %2$d setting off</item>
+        <item quantity="other">Protecting %1$s - %2$d settings off</item>
+    </plurals>
+    <string name="engine_notif_couldnt_turn_off">Couldn\'t turn off: %1$s</string>
+    <string name="engine_notif_couldnt_restore">Couldn\'t restore: %1$s</string>
+    <string name="engine_action_pause">Pause 1 hour</string>
+    <string name="engine_action_resume">Resume</string>
+    <string name="engine_action_hide">Hide</string>
+
+    <!-- Alerts (only posted when something fails) -->
+    <string name="engine_alert_disable_title">Protection incomplete</string>
+    <string name="engine_alert_disable_text">Couldn\'t turn off %1$s while %2$s is open</string>
+    <string name="engine_alert_restore_title">Couldn\'t restore settings</string>
+    <string name="engine_alert_reset_title">Warden\'s settings were reset</string>
+    <string name="engine_alert_reset_text">Its saved settings were damaged, so Warden started fresh. If a watched app was open, check USB and wireless debugging, Developer options and accessibility, and turn back on anything you need. Then pick your apps again.</string>
+    <string name="engine_alert_restore_text">Couldn\'t restore %1$s - turn it back on in Settings</string>
+
+    <!-- Quick Settings tile -->
+    <string name="engine_tile_label">Warden</string>
+    <string name="engine_tile_off">Off</string>
+    <string name="engine_tile_setup">Setup needed</string>
+    <string name="engine_tile_not_running">Not running</string>
+</resources>

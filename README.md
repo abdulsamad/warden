@@ -139,7 +139,7 @@ Don't want it? Tap **Hide** and turn off the **Monitor (safe to turn off)** cate
 
 Warden notices a watched app within about a second of it opening. Most apps check later than that, so opening them from their own icon just works.
 
-A few apps check **the instant they start** (Mumbai One is one). They beat that second, see a setting still on (Developer options, USB debugging or an accessibility app), and refuse to run, even though Warden switches everything off a moment later. Reopening doesn't help: they win the race every time.
+A few apps check **the instant they start**. They beat that second, see a setting still on (Developer options, USB debugging or an accessibility app), and refuse to run, even though Warden switches everything off a moment later. Reopening doesn't help: they win the race every time.
 
 > [!IMPORTANT]
 > For those apps, open them from Warden's **Protected launch** widget instead of their own icon. The widget switches the settings off **first**, waits for Warden to confirm, **then** opens the app, so its very first check sees a clean phone.

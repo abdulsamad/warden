@@ -228,8 +228,6 @@ Kotlin 2.0, Jetpack Compose (Material 3, dynamic color on Android 12+), AndroidX
 
 ## 📄 License
 
-Copyright (C) 2026 abdulsamad
+[GPL-3.0-or-later](LICENSE). Copyright (C) 2026 abdulsamad.
 
-Warden is free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License](LICENSE) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version (`GPL-3.0-or-later`).
-
-Warden is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](LICENSE) for more details.
+Use it, study it, change it and share it. If you share a changed version, share its source under the same license.

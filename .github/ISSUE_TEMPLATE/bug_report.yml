@@ -1,0 +1,82 @@
+name: Bug report
+description: Something doesn't work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please check the [Not working?](https://github.com/abdulsamad/warden#-not-working) list first; it solves most problems.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Watch an app and start the monitor
+        2. Open the app
+        3. ...
+    validations:
+      required: true
+
+  - type: input
+    id: warden-version
+    attributes:
+      label: Warden version
+      description: Android Settings > Apps > Warden shows it.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: phone
+    attributes:
+      label: Phone and Android version
+      placeholder: "Phone model, Android 14"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: grant
+    attributes:
+      label: How was the permission granted?
+      options:
+        - adb from a computer
+        - Shizuku
+        - Not granted yet
+    validations:
+      required: true
+
+  - type: dropdown
+    id: self-test
+    attributes:
+      label: Result of "Test on this device"
+      options:
+        - All three "Works"
+        - Some failed
+        - Didn't run it
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Activity log, alerts or other details
+      description: Recent activity entries, the text of any Warden alert, or anything else that helps. Screenshots are welcome.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: The monitor is on (the top card says Watching or Protecting).
+          required: true
+        - label: I searched the existing issues.
+          required: true

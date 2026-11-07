@@ -397,6 +397,57 @@ code {
   font-size: 0.9375rem;
 }
 
+/* Holds the height of the copy button from the start, then fades in once the checksum arrives.
+   If it never does, the line stays an invisible gap at the bottom of the column. */
+.hero-sha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  min-height: 2.75rem;
+  margin-block-start: 0.5rem;
+  color: rgb(255 255 255 / 0.72);
+  font-size: 0.9375rem;
+  transition: opacity var(--enter) var(--ease-out);
+}
+
+.hero-sha[data-pending] {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.hero-sha-label {
+  white-space: nowrap;
+}
+
+/* Grows to the full checksum when there's room, so the copy button sits right after it. */
+.hero-sha-value {
+  display: flex;
+  flex: 1 1 18ch;
+  min-width: 0;
+  max-width: max-content;
+  overflow: hidden;
+  color: rgb(255 255 255 / 0.86);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.hero-sha-value > :nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero .copy {
+  border-color: rgb(255 255 255 / 0.3);
+  background-color: transparent;
+  color: #ffffff;
+}
+
+.hero .copy[data-state='copied'] {
+  border-color: #ffffff;
+}
+
 /* ---- Demo card --------------------------------------------------------------------------- */
 
 /* A watched app opens, three settings switch off one after another, and come back on when it
@@ -1011,6 +1062,11 @@ code {
 
   .copy:hover {
     border-color: var(--primary);
+  }
+
+  .hero .copy:hover {
+    border-color: rgb(255 255 255 / 0.6);
+    background-color: rgb(255 255 255 / 0.1);
   }
 
   .faq summary:hover {

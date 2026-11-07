@@ -145,6 +145,12 @@ const jsonLd = {
               ></span> &middot;
             </span>Android 8.0+ &middot; No root needed
           </p>
+          <!-- Keeps its space while the checksum loads, so nothing in the hero moves. -->
+          <p class="hero-sha" data-pending>
+            <span class="hero-sha-label">SHA-256</span>
+            <code class="hero-sha-value" id="hero-sha"></code>
+            <CopyButton target="hero-sha" label="APK checksum" />
+          </p>
         </div>
 
         <figure class="demo" data-demo data-state="closed">
@@ -660,13 +666,29 @@ const jsonLd = {
       for (const el of document.querySelectorAll<HTMLElement>('[data-release-wrap]')) el.hidden = false;
 
       const sha = apk.digest?.startsWith('sha256:') ? apk.digest.slice('sha256:'.length) : null;
+      if (!sha) return;
+
       const shaEl = document.getElementById('apk-sha');
-      if (sha && shaEl) {
+      if (shaEl) {
         shaEl.textContent = sha;
         shaEl.hidden = false;
         for (const el of document.querySelectorAll<HTMLElement>('[data-release-fallback]')) el.hidden = true;
         const button = document.querySelector<HTMLButtonElement>('button[data-copy="apk-sha"]');
         if (button) enableCopy(button);
+      }
+
+      // The hero shows the start and end whole and lets the middle give way when space is
+      // short. The text is still the full checksum, so copying and screen readers get all of it.
+      const heroSha = document.getElementById('hero-sha');
+      if (heroSha) {
+        heroSha.replaceChildren(
+          ...[sha.slice(0, 8), sha.slice(8, -8), sha.slice(-8)].map((text) => {
+            const part = document.createElement('span');
+            part.textContent = text;
+            return part;
+          }),
+        );
+        heroSha.closest<HTMLElement>('.hero-sha')?.removeAttribute('data-pending');
       }
     } catch {
       // Offline or rate-limited: the static links still work.

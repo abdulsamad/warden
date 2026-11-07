@@ -14,8 +14,6 @@
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/abdulsamad/warden?color=2F4DD8)](https://github.com/abdulsamad/warden/releases/latest)
 
-**[warden.abdulsamad.dev](https://warden.abdulsamad.dev)**
-
 </div>
 
 ---
@@ -32,25 +30,25 @@ Warden does it for you:
 
 ## ✨ Features
 
-| | Feature | Details |
-|---|---|---|
-| 🎯 | **Per-app watching** | Choose any launchable app from a searchable picker with icons. |
-| 🧭 | **Guided setup** | A numbered checklist with phone-specific tips. Every unfinished step is one tap from its fix, and the self-test is suggested once you're done. |
-| 📲 | **No computer needed** | On Android 11+, do the one-time grant on the phone through [Shizuku](https://shizuku.rikka.app/) instead of adb. |
-| 🔧 | **Three protections** | USB and wireless debugging, Developer options, and accessibility services - all of them by default, or only the ones you pick. Toggle each independently. |
-| ♻️ | **Exact restore** | The pre-session state is snapshotted and put back verbatim, verified by read-back. |
-| 💥 | **Crash-safe** | The snapshot is saved *before* anything is disabled. If Warden is killed or the phone reboots mid-session, it restores on the next start. |
-| ⏸️ | **Pause** | For 15 minutes, an hour, or until the screen turns off. **Pause 1 hour** is one tap on the notification. |
-| 🧩 | **Quick Settings tile** | Turn the monitor on or off from the shade; long-press opens the app. |
-| 🚀 | **Protected launch widget** | For apps that check the instant they open: the widget switches settings off first, then opens the app. Add one from **Apps to watch** in one tap. See [below](#-apps-that-check-the-moment-they-open). |
-| 🧪 | **On-device self-test** | Flips each managed setting off, verifies it, and restores it, so you know your OEM build cooperates. |
-| 📜 | **Activity log** | The last 20 protected sessions, including anything that failed to disable or restore. |
-| ↩️ | **Undo** | Removing a watched app or clearing the log can be undone from the snackbar. |
-| 🙈 | **Hideable status notification** | Android requires one while Warden runs. Tap **Hide** on it and turn off **Monitor**; Warden keeps working and failure alerts still come through. |
-| 🔔 | **Failure alerts** | A separate notification channel only fires when a setting could not be switched off or put back. |
-| 🔋 | **Light on battery** | Polls every 750 ms only while the screen is on; idles at 5 s with the screen off. No accessibility service of its own. |
-| ♿ | **Comfortable to use** | Large text, TalkBack, tablets and foldables, and the system "remove animations" setting are all supported. Light and dark follow the system, and dark is true black for OLED. |
-| 🔒 | **Private by design** | No `INTERNET` permission, and app data is excluded from cloud backup and device-to-device transfer. |
+|     | Feature                          | Details                                                                                                                                                                                                |
+| --- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 🎯  | **Per-app watching**             | Choose any launchable app from a searchable picker with icons.                                                                                                                                         |
+| 🧭  | **Guided setup**                 | A numbered checklist with phone-specific tips. Every unfinished step is one tap from its fix, and the self-test is suggested once you're done.                                                         |
+| 📲  | **No computer needed**           | On Android 11+, do the one-time grant on the phone through [Shizuku](https://shizuku.rikka.app/) instead of adb.                                                                                       |
+| 🔧  | **Three protections**            | USB and wireless debugging, Developer options, and accessibility services - all of them by default, or only the ones you pick. Toggle each independently.                                              |
+| ♻️  | **Exact restore**                | The pre-session state is snapshotted and put back verbatim, verified by read-back.                                                                                                                     |
+| 💥  | **Crash-safe**                   | The snapshot is saved _before_ anything is disabled. If Warden is killed or the phone reboots mid-session, it restores on the next start.                                                              |
+| ⏸️  | **Pause**                        | For 15 minutes, an hour, or until the screen turns off. **Pause 1 hour** is one tap on the notification.                                                                                               |
+| 🧩  | **Quick Settings tile**          | Turn the monitor on or off from the shade; long-press opens the app.                                                                                                                                   |
+| 🚀  | **Protected launch widget**      | For apps that check the instant they open: the widget switches settings off first, then opens the app. Add one from **Apps to watch** in one tap. See [below](#-apps-that-check-the-moment-they-open). |
+| 🧪  | **On-device self-test**          | Flips each managed setting off, verifies it, and restores it, so you know your OEM build cooperates.                                                                                                   |
+| 📜  | **Activity log**                 | The last 20 protected sessions, including anything that failed to disable or restore.                                                                                                                  |
+| ↩️  | **Undo**                         | Removing a watched app or clearing the log can be undone from the snackbar.                                                                                                                            |
+| 🙈  | **Hideable status notification** | Android requires one while Warden runs. Tap **Hide** on it and turn off **Monitor**; Warden keeps working and failure alerts still come through.                                                       |
+| 🔔  | **Failure alerts**               | A separate notification channel only fires when a setting could not be switched off or put back.                                                                                                       |
+| 🔋  | **Light on battery**             | Polls every 750 ms only while the screen is on; idles at 5 s with the screen off. No accessibility service of its own.                                                                                 |
+| ♿  | **Comfortable to use**           | Large text, TalkBack, tablets and foldables, and the system "remove animations" setting are all supported. Light and dark follow the system, and dark is true black for OLED.                          |
+| 🔒  | **Private by design**            | No `INTERNET` permission, and app data is excluded from cloud backup and device-to-device transfer.                                                                                                    |
 
 ## 📋 Requirements
 
@@ -100,7 +98,6 @@ Warden walks you through this in its **Setup** card, and **Help** (the **?** in 
    ```
 
    **Rather skip the computer?** On Android 11+, [Shizuku](https://shizuku.rikka.app/) does the same grant on the phone:
-
    1. Install Shizuku.
    2. Turn on **Wireless debugging** in Developer options. Wi-Fi must be on.
    3. In Shizuku, tap **Pairing** and enter the code from **Wireless debugging > Pair device with pairing code**. Then tap **Start**.
@@ -123,13 +120,13 @@ Warden walks you through this in its **Setup** card, and **Help** (the **?** in 
 
 Setup detects the phone maker and shows these automatically:
 
-| Phone | If the adb grant fails | To keep Warden running |
-|---|---|---|
-| **Samsung** (One UI) | - | Battery: Unrestricted, add to **Never sleeping apps**, Keep open in Recents |
-| **Xiaomi / Redmi / Poco** (MIUI, HyperOS) | Turn on **USB debugging (Security settings)** in Developer options | **Autostart** on, Battery saver: **No restrictions**, lock in Recents |
-| **Oppo / Realme / OnePlus** (ColorOS, Realme UI, OxygenOS) | Turn on **Disable permission monitoring** in Developer options | Battery usage: **Allow background activity** and **Allow auto launch**, lock in Recents |
-| **Vivo / iQOO** | - | Allow **high background power consumption**, Autostart if shown, lock in Recents |
-| **Motorola, Pixel, near-stock** | - | The standard battery step is enough |
+| Phone                                                      | If the adb grant fails                                             | To keep Warden running                                                                  |
+| ---------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| **Samsung** (One UI)                                       | -                                                                  | Battery: Unrestricted, add to **Never sleeping apps**, Keep open in Recents             |
+| **Xiaomi / Redmi / Poco** (MIUI, HyperOS)                  | Turn on **USB debugging (Security settings)** in Developer options | **Autostart** on, Battery saver: **No restrictions**, lock in Recents                   |
+| **Oppo / Realme / OnePlus** (ColorOS, Realme UI, OxygenOS) | Turn on **Disable permission monitoring** in Developer options     | Battery usage: **Allow background activity** and **Allow auto launch**, lock in Recents |
+| **Vivo / iQOO**                                            | -                                                                  | Allow **high background power consumption**, Autostart if shown, lock in Recents        |
+| **Motorola, Pixel, near-stock**                            | -                                                                  | The standard battery step is enough                                                     |
 
 ## 🔕 The status notification
 
@@ -176,16 +173,16 @@ Check these in order:
 
 ## 🔐 Permissions
 
-| Permission | Why |
-|---|---|
-| `WRITE_SECURE_SETTINGS` | Actually flip Developer options, USB and wireless debugging, and accessibility services. Granted once via adb or Shizuku. |
-| `moe.shizuku.manager.permission.API_V23` | Added by the Shizuku library. Lets Warden ask Shizuku to run the one-time grant; unused otherwise. |
-| `PACKAGE_USAGE_STATS` | Detect the foreground app without running an accessibility service. |
-| `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_SPECIAL_USE` | Keep the monitor alive with an ongoing notification (which you can hide). |
-| `RECEIVE_BOOT_COMPLETED` | Restore leftovers and restart the monitor after a reboot or update. |
-| `POST_NOTIFICATIONS` | Status notification and failure alerts (Android 13+). |
-| `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | Ask not to be killed by aggressive battery managers. |
-| `QUERY_ALL_PACKAGES` | List installed apps for the app picker. |
+| Permission                                              | Why                                                                                                                       |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `WRITE_SECURE_SETTINGS`                                 | Actually flip Developer options, USB and wireless debugging, and accessibility services. Granted once via adb or Shizuku. |
+| `moe.shizuku.manager.permission.API_V23`                | Added by the Shizuku library. Lets Warden ask Shizuku to run the one-time grant; unused otherwise.                        |
+| `PACKAGE_USAGE_STATS`                                   | Detect the foreground app without running an accessibility service.                                                       |
+| `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_SPECIAL_USE` | Keep the monitor alive with an ongoing notification (which you can hide).                                                 |
+| `RECEIVE_BOOT_COMPLETED`                                | Restore leftovers and restart the monitor after a reboot or update.                                                       |
+| `POST_NOTIFICATIONS`                                    | Status notification and failure alerts (Android 13+).                                                                     |
+| `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`                  | Ask not to be killed by aggressive battery managers.                                                                      |
+| `QUERY_ALL_PACKAGES`                                    | List installed apps for the app picker.                                                                                   |
 
 ## 🗂️ Project layout
 

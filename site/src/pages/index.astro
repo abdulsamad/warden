@@ -1,0 +1,677 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CopyButton from '../components/CopyButton.astro';
+
+const repo = 'https://github.com/abdulsamad/warden';
+const apkUrl = `${repo}/releases/latest/download/warden.apk`;
+const latestUrl = `${repo}/releases/latest`;
+const obtainiumUrl = `https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/${repo}`;
+const setupGuideUrl = `${repo}#-one-time-setup`;
+const grantCommand =
+  'adb shell pm grant dev.abdulsamad.warden android.permission.WRITE_SECURE_SETTINGS';
+// Public SHA-256 of the release signing certificate, as in the README and scripts/release.sh.
+const certSha =
+  '96:D1:02:37:48:EA:FD:44:1A:E6:CE:88:72:AA:D9:79:30:6A:37:B8:56:4A:39:6F:08:C4:3C:E8:DB:41:06:A4';
+
+const title = 'Warden - keep Developer options, keep your banking apps';
+const description =
+  'Free, open-source Android app that switches off Developer options, USB and wireless debugging, and accessibility services while picky apps are open, then puts everything back when you leave.';
+
+const protections = [
+  {
+    icon: 'plug',
+    title: 'USB and wireless debugging',
+    text: 'adb over USB and Wireless debugging, switched off together.',
+  },
+  {
+    icon: 'braces',
+    title: 'Developer options',
+    text: 'The main Developer options switch.',
+  },
+  {
+    icon: 'person',
+    title: 'Accessibility services',
+    text: 'Every enabled service, or only the ones you choose.',
+  },
+] as const;
+
+// The promise: whatever Warden switches off comes back.
+const guarantees = [
+  {
+    title: 'Exact restore',
+    text: 'The previous state is saved and put back as it was, and every change is checked by reading it back.',
+  },
+  {
+    title: 'Crash-safe',
+    text: 'The snapshot is saved before anything is switched off, so a crash, force stop, reboot or update never strands a setting.',
+  },
+  {
+    title: 'On-device self-test',
+    text: 'Switches each setting off, checks it and puts it back, so you know your phone cooperates.',
+  },
+] as const;
+
+// Everything else, as a light list rather than more cards.
+const extras = [
+  {
+    icon: 'widget',
+    title: 'Protected launch widget',
+    text: 'For apps that check the instant they open: settings go off first, then the app opens.',
+  },
+  {
+    icon: 'pause',
+    title: 'Pause',
+    text: 'For 15 minutes, an hour, or until the screen turns off.',
+  },
+  {
+    icon: 'toggle',
+    title: 'Quick Settings tile',
+    text: 'Turn the monitor on or off from the notification shade.',
+  },
+  {
+    icon: 'list',
+    title: 'Activity log',
+    text: 'The last 20 sessions, including anything that failed.',
+  },
+  {
+    icon: 'battery',
+    title: 'Light on battery',
+    text: 'Only checks the app in front while the screen is on.',
+  },
+  {
+    icon: 'lock',
+    title: 'Private by design',
+    text: 'No internet access, no analytics, no cloud backups.',
+  },
+] as const;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Warden',
+  description,
+  url: 'https://warden.abdulsamad.dev/',
+  downloadUrl: apkUrl,
+  operatingSystem: 'Android 8.0 or later',
+  applicationCategory: 'UtilitiesApplication',
+  license: 'https://www.gnu.org/licenses/gpl-3.0.html',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  author: { '@type': 'Person', name: 'Abdul Samad', url: 'https://abdulsamad.dev' },
+};
+---
+
+<Base title={title} description={description}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="hero">
+    <div class="container">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="Warden home">
+          <img src="/favicon.svg" width="36" height="36" alt="" />
+          Warden
+        </a>
+        <nav class="nav" aria-label="Main">
+          <a class="nav-optional" href="#how">How it works</a>
+          <a class="nav-optional" href="#setup">Setup</a>
+          <a class="nav-optional" href="#faq">FAQ</a>
+          <a href={repo}>
+            <Icon name="code" size={20} />
+            GitHub
+          </a>
+        </nav>
+      </header>
+
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Free and open-source Android app</p>
+          <h1>Keep Developer options. Keep your banking apps.</h1>
+          <p class="hero-lead">
+            Warden switches off Developer options, USB and wireless debugging, and accessibility
+            services while the apps you pick are open, and puts everything back the moment you
+            leave.
+          </p>
+          <div class="cta">
+            <a class="btn btn-light" href={apkUrl}>
+              <Icon name="download" size={20} class="nudge nudge-down" />
+              Download APK
+            </a>
+          </div>
+          <p class="hero-meta">
+            <span data-release-wrap hidden
+              >Version <span data-release="version"></span> &middot; <span data-release="size"
+              ></span> &middot;
+            </span>Android 8.0+ &middot; No root needed
+          </p>
+        </div>
+
+        <figure class="demo" data-demo data-state="closed">
+          <div class="demo-head" aria-hidden="true">
+            <span class="demo-app"><Icon name="bank" size={26} /></span>
+            <div>
+              <p class="demo-title">Your banking app</p>
+              <p class="demo-states">
+                <span class="state-closed">Closed - Warden is watching</span>
+                <span class="state-open">Open - settings switched off</span>
+                <span class="state-left">Left - settings restored</span>
+              </p>
+            </div>
+          </div>
+          <ul class="demo-list" aria-hidden="true">
+            <li>Developer options <span class="switch"></span></li>
+            <li>USB debugging <span class="switch"></span></li>
+            <li>Accessibility <span class="switch"></span></li>
+          </ul>
+          <figcaption class="demo-foot">
+            <span>
+              <span class="visually-hidden"
+                >While a watched app is open, Warden switches off Developer options, USB debugging and
+                accessibility, and turns them back on when you leave.
+              </span>
+              Real settings, switched for real.
+            </span>
+            <button class="demo-toggle" type="button" data-demo-toggle aria-label="Open the app" hidden>
+              <span class="stack swap" aria-hidden="true">
+                <span>Open the app</span>
+                <span>Leave the app</span>
+              </span>
+            </button>
+          </figcaption>
+          <p class="visually-hidden" aria-live="polite" data-demo-status></p>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="section" aria-labelledby="problem-title">
+      <div class="container">
+        <div class="problem">
+          <h2 id="problem-title">Some apps refuse to run on a phone set up for development.</h2>
+          <p>
+            Banking, payment and wallet apps, trading apps, government and ID apps, and a few games
+            won't open while Developer options, USB debugging or an accessibility app is on. Turning
+            those off by hand every time, and back on afterwards, gets old fast.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="how-title">How it works</h2>
+          <p>Set it up once. After that you just use your phone.</p>
+        </div>
+        <ol class="grid steps">
+          <li class="card">
+            <h3>Pick the apps to watch</h3>
+            <p>Choose them from a searchable list, and choose what to switch off.</p>
+          </li>
+          <li class="card">
+            <h3>Open one as usual</h3>
+            <p>
+              Warden really switches those settings off. The app sees a clean phone because it is
+              one.
+            </p>
+          </li>
+          <li class="card">
+            <h3>Leave, and it's all back</h3>
+            <p>
+              When you leave or the screen turns off, Warden restores the exact previous state.
+              Anything that was already off stays off.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="protections-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="protections-title">What it switches off</h2>
+          <p>All three by default, or only the ones you pick.</p>
+        </div>
+        <ul class="grid" role="list">
+          {
+            protections.map((item) => (
+              <li class="card">
+                <span class="icon-tile">
+                  <Icon name={item.icon} />
+                </span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="features-title">Built to put things back</h2>
+          <p>Warden changes real settings, so getting them back matters more than anything else.</p>
+        </div>
+        <ul class="grid" role="list">
+          {
+            guarantees.map((item) => (
+              <li class="card">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <h3 class="extras-title">Also in the app</h3>
+        <ul class="extras" role="list">
+          {
+            extras.map((item) => (
+              <li>
+                <Icon name={item.icon} size={20} />
+                <h4>{item.title}</h4>
+                <p>{item.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="setup" aria-labelledby="setup-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="setup-title">Set up once</h2>
+          <p>
+            Warden needs one permission that only adb can grant. The Setup card in the app walks you
+            through every step.
+          </p>
+        </div>
+        <ol class="setup-steps steps">
+          <li>
+            <h3>Install Warden</h3>
+            <p>
+              <a href={apkUrl}>Download the APK</a> and open it on your phone (Android 8.0 or later).
+            </p>
+          </li>
+          <li>
+            <h3>Grant the permission once</h3>
+            <p>From a computer with adb, over USB or Wireless debugging:</p>
+            <div class="command">
+              <code id="grant-command">{grantCommand}</code>
+              <CopyButton target="grant-command" label="adb command" />
+            </div>
+            <p>
+              No computer? On Android 11 and later, <a href="https://shizuku.rikka.app/">Shizuku</a>
+              can grant it on the phone; Setup shows you how. Either way the grant survives reboots and
+              updates.
+            </p>
+          </li>
+          <li>
+            <h3>Finish in the app</h3>
+            <p>
+              Allow usage access, keep Warden running, pick your apps, then tap Test. Setup adds any
+              extra steps your phone needs.
+            </p>
+          </li>
+        </ol>
+        <a class="more" href={setupGuideUrl}>
+          Full setup guide
+          <Icon name="arrow" size={18} class="nudge nudge-right" />
+        </a>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="faq-title">Questions</h2>
+        </div>
+        <div class="faq">
+          <details name="faq">
+            <summary>Is it safe?</summary>
+            <p>
+              Warden only changes settings you could change yourself in Android's Settings. It saves
+              the previous state before changing anything, checks every change by reading it back,
+              and restores after a crash or reboot. The code is open source.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>Does it hide or fake anything?</summary>
+            <p>
+              No. Warden really switches the settings off while the app is open. Nothing is spoofed,
+              hooked or hidden from other apps.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>Do I need root?</summary>
+            <p>
+              No. One adb command, or Shizuku on Android 11 and later, grants the permission once.
+              Warden can't help with apps that also check for root or a modified system.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>An app still complains. What now?</summary>
+            <p>
+              A few apps check the instant they open, before Warden can react. Add a Protected launch
+              widget for that app under Apps to watch, close the app fully, then always open it from
+              the widget instead of its own icon.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>Why does my phone warn when I install it?</summary>
+            <p>
+              Android may warn about an app installed from outside the app store that asks for
+              <code>WRITE_SECURE_SETTINGS</code> and <code>QUERY_ALL_PACKAGES</code>. That's
+              expected for Warden. It has no internet access at all.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>Will it drain my battery?</summary>
+            <p>
+              No. Warden checks which app is in front only while the screen is on and something is
+              being watched. Otherwise it idles, and it never runs an accessibility service of its
+              own.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>Which phones does it work on?</summary>
+            <p>
+              Android 8.0 and later. Some phone makers block parts of this or stop apps in the
+              background, so run Test on this device once on every new phone. Setup detects your
+              phone and shows the extra steps it needs.
+            </p>
+          </details>
+          <details name="faq">
+            <summary>How do I get updates?</summary>
+            <p>
+              Download the new APK from this page and install it over the old one. Your settings and
+              the permission stay. For automatic updates, add Warden to
+              <a href={obtainiumUrl}>Obtainium</a>.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="verify" aria-labelledby="verify-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="verify-title">Check your download</h2>
+          <p>
+            Every release is signed with the same key, and Android refuses to update Warden with an
+            APK signed by any other.
+          </p>
+        </div>
+        <dl class="hashes">
+          <div class="hash-row">
+            <dt>
+              APK SHA-256<span data-release-wrap hidden>
+                (version <span data-release="version"></span>)</span
+              >
+            </dt>
+            <dd>
+              <code class="hash" id="apk-sha" hidden></code>
+              <span class="hash" data-release-fallback
+                >Listed on the <a href={latestUrl}>latest release</a>.</span
+              >
+              <CopyButton target="apk-sha" label="APK checksum" />
+            </dd>
+          </div>
+          <div class="hash-row">
+            <dt>Signing certificate SHA-256</dt>
+            <dd>
+              <code class="hash" id="cert-sha">{certSha}</code>
+              <CopyButton target="cert-sha" label="certificate fingerprint" />
+            </dd>
+          </div>
+        </dl>
+        <p class="note">
+          Check the certificate with <code>apksigner verify --print-certs warden.apk</code>, or on
+          the phone with <a href="https://github.com/soupslurpr/AppVerifier">AppVerifier</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">
+            <img src="/favicon.svg" width="28" height="28" alt="" />
+            Warden
+          </p>
+          <p class="footer-note">
+            Free software under <a href={`${repo}/blob/main/LICENSE`}>GPL-3.0-or-later</a>. Made by
+            <a href="https://abdulsamad.dev">Abdul Samad</a>.
+          </p>
+        </div>
+        <ul class="footer-links" role="list">
+          <li><a href={repo}>Source code</a></li>
+          <li><a href={`${repo}/releases`}>Releases</a></li>
+          <li><a href={`${repo}/blob/main/CHANGELOG.md`}>Changelog</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <p class="visually-hidden" aria-live="polite" id="copy-status"></p>
+</Base>
+
+
+<script>
+  const REPO = 'abdulsamad/warden';
+  const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // ---- Copy buttons ----------------------------------------------------------------------
+
+  const copyStatus = document.getElementById('copy-status');
+
+  function announce(message: string) {
+    if (!copyStatus) return;
+    copyStatus.textContent = message;
+    // Cleared afterwards, so the same message is read again on the next copy.
+    setTimeout(() => {
+      if (copyStatus.textContent === message) copyStatus.textContent = '';
+    }, 2000);
+  }
+
+  // A copy button only shows once there is a Clipboard API and visible text to copy.
+  function enableCopy(button: HTMLButtonElement) {
+    const source = document.getElementById(button.dataset.copy ?? '');
+    if (!navigator.clipboard || !source || source.hidden) return;
+    button.hidden = false;
+  }
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-copy]')) {
+    let reset: number | undefined;
+    enableCopy(button);
+    button.addEventListener('click', async () => {
+      const source = document.getElementById(button.dataset.copy ?? '');
+      const text = source?.textContent?.trim();
+      if (!source || !text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        button.dataset.state = 'copied';
+        announce('Copied to clipboard');
+      } catch {
+        // Clipboard blocked: select the text, so copying by hand is one shortcut away.
+        getSelection()?.selectAllChildren(source);
+        announce('Could not copy. The text is selected instead.');
+      }
+      // Long enough to read "Copied", short enough that a second copy starts fresh.
+      clearTimeout(reset);
+      reset = window.setTimeout(() => delete button.dataset.state, 1600);
+    });
+  }
+
+  // ---- Demo card -------------------------------------------------------------------------
+
+  type DemoState = 'closed' | 'open' | 'left';
+
+  function setUpDemo(card: HTMLElement) {
+    const toggle = card.querySelector<HTMLButtonElement>('[data-demo-toggle]');
+    const status = card.querySelector<HTMLElement>('[data-demo-status]');
+    const app = card.querySelector<HTMLElement>('.demo-app');
+    if (!toggle) return;
+
+    const show = (state: DemoState) => {
+      card.dataset.state = state;
+      toggle.setAttribute('aria-label', state === 'open' ? 'Leave the app' : 'Open the app');
+      // Opening the app is a tap on its icon: the same quick press the buttons here give.
+      if (state === 'open' && app && !reduceMotion.matches) {
+        app.animate(
+          [{ transform: 'scale(1)' }, { transform: 'scale(0.9)' }, { transform: 'scale(1)' }],
+          { duration: 240, easing: EASE_OUT },
+        );
+      }
+    };
+
+    // Tells the story once, the first time the card is on screen: the app opens, then you
+    // leave it. Under 5 seconds in all, then it rests until the reader takes over. Scrolling
+    // away or switching tabs mid-story resets it, so nobody misses it.
+    let timers: number[] = [];
+    let onScreen = false;
+    let done = false;
+
+    const cancel = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+    };
+
+    const finish = () => {
+      done = true;
+      cancel();
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', update);
+    };
+
+    function update() {
+      if (done) return;
+      if (onScreen && !document.hidden) {
+        if (timers.length > 0) return;
+        timers.push(window.setTimeout(() => show('open'), 1200));
+        timers.push(
+          window.setTimeout(() => {
+            show('left');
+            finish();
+          }, 4400),
+        );
+      } else if (timers.length > 0) {
+        cancel();
+        show('closed');
+      }
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        update();
+      },
+      { threshold: 0.6 },
+    );
+
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => {
+      finish();
+      const next: DemoState = card.dataset.state === 'open' ? 'left' : 'open';
+      show(next);
+      if (status) {
+        status.textContent =
+          next === 'open'
+            ? 'App open. Developer options, USB debugging and accessibility are switched off.'
+            : 'App closed. All three settings are back on.';
+      }
+    });
+
+    // With reduced motion the story doesn't play by itself; the button still works.
+    if (!reduceMotion.matches) {
+      observer.observe(card);
+      document.addEventListener('visibilitychange', update);
+    }
+  }
+
+  const demo = document.querySelector<HTMLElement>('[data-demo]');
+  if (demo) setUpDemo(demo);
+
+  // ---- Scroll reveal ---------------------------------------------------------------------
+
+  // Only what starts below the fold is held back, so nothing already on screen moves. Each
+  // element rises in once; things arriving together cascade 50ms apart, capped at 200ms.
+  if ('IntersectionObserver' in window) {
+    const targets = document.querySelectorAll<HTMLElement>(
+      '.section-head, .problem, .grid > li, .extras-title, .extras > li, .setup-steps > li, .more, .faq, .hashes, .note',
+    );
+    const revealer = new IntersectionObserver(
+      (entries) => {
+        const arriving = entries
+          .filter((entry) => entry.isIntersecting)
+          .map((entry) => entry.target as HTMLElement)
+          .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+        arriving.forEach((el, i) => {
+          el.style.transitionDelay = `${Math.min(i, 4) * 50}ms`;
+          el.dataset.reveal = 'shown';
+          revealer.unobserve(el);
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    for (const el of targets) {
+      if (el.getBoundingClientRect().top < innerHeight) continue;
+      el.dataset.reveal = 'pending';
+      revealer.observe(el);
+    }
+  }
+
+  // ---- Latest release --------------------------------------------------------------------
+
+  interface Asset {
+    name: string;
+    size: number;
+    digest?: string | null;
+  }
+
+  interface Release {
+    tag_name: string;
+    assets: Asset[];
+  }
+
+  // The page works without this: links point at releases/latest. It only fills in the version,
+  // size and checksum, so they never go stale between releases.
+  async function showLatestRelease() {
+    try {
+      const response = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+        headers: { Accept: 'application/vnd.github+json' },
+      });
+      if (!response.ok) return;
+      const release: Release = await response.json();
+      const apk = release.assets.find((asset) => asset.name === 'warden.apk');
+      if (!apk) return;
+
+      const version = release.tag_name.replace(/^v/, '');
+      const size = `${(apk.size / 1_000_000).toFixed(1)} MB`;
+      for (const el of document.querySelectorAll('[data-release="version"]')) el.textContent = version;
+      for (const el of document.querySelectorAll('[data-release="size"]')) el.textContent = size;
+      for (const el of document.querySelectorAll<HTMLElement>('[data-release-wrap]')) el.hidden = false;
+
+      const sha = apk.digest?.startsWith('sha256:') ? apk.digest.slice('sha256:'.length) : null;
+      const shaEl = document.getElementById('apk-sha');
+      if (sha && shaEl) {
+        shaEl.textContent = sha;
+        shaEl.hidden = false;
+        for (const el of document.querySelectorAll<HTMLElement>('[data-release-fallback]')) el.hidden = true;
+        const button = document.querySelector<HTMLButtonElement>('button[data-copy="apk-sha"]');
+        if (button) enableCopy(button);
+      }
+    } catch {
+      // Offline or rate-limited: the static links still work.
+    }
+  }
+
+  showLatestRelease();
+</script>

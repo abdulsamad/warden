@@ -38,3 +38,8 @@ signing.env
 /.claude/
 /.serena/
 /graphify-out/
+
+# Website (site/): dependencies and build output
+site/node_modules/
+site/dist/
+site/.astro/

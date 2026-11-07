@@ -14,6 +14,8 @@
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/abdulsamad/warden?color=2F4DD8)](https://github.com/abdulsamad/warden/releases/latest)
 
+**[warden.abdulsamad.dev](https://warden.abdulsamad.dev)**
+
 </div>
 
 ---
@@ -208,6 +210,7 @@ warden/
 ├── app/src/main/aidl/                # IGrantService, the one Shizuku call
 ├── app/src/main/res/                 # strings_<feature>.xml, icons, themes
 ├── scripts/release.sh                # 📦 build, verify and publish a release
+├── site/                             # 🌐 landing page (Astro), warden.abdulsamad.dev
 ├── CHANGELOG.md                      # 📝 release notes
 └── docs/
     ├── ARCHITECTURE.md               # 🏗️ how the engine works

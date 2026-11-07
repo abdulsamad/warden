@@ -9,6 +9,7 @@ Guidance for AI agents and human contributors working on **Warden**. Read this b
 - **Stack:** Kotlin 2.0.21, Jetpack Compose + Material 3, AndroidX Lifecycle/ViewModel, DataStore Preferences, coroutines/Flow, Shizuku API 13.1.5 (optional grant only, AIDL enabled for it).
 - **SDK:** minSdk 26, compileSdk/targetSdk 35, JDK 17, AGP 8.7.3, Gradle 8.10.2.
 - **Shape:** one `:app` module, one process. Engine in `app.warden`, UI in `app.warden.ui`.
+- **Website:** `site/` is the Astro landing page at https://warden.abdulsamad.dev, deployed by Cloudflare Pages on pushes to `main` that touch `site/`. It is separate from the Gradle build.
 
 ## 🛠️ Commands
 
@@ -74,6 +75,20 @@ The service runs 24/7, so:
 - **Version checks:** gate APIs with `Build.VERSION.SDK_INT` (minSdk is 26). Existing gates cover notifications (33), tile subtitle (29), background restriction (28), unused-app pause (30), the Shizuku option (30), `startActivityAndCollapse(PendingIntent)` (34).
 - **Guide copy:** keep it short. One idea per line, no line longer than two sentences; details belong in Setup, next to the control they describe.
 
+## 🌐 Website (`site/`)
+
+```bash
+cd site && pnpm install
+pnpm dev                       # http://localhost:4321
+pnpm build && pnpm preview     # production build; the CSP only applies here, not in dev
+```
+
+- One static page, no framework, no web fonts. One small script: copy buttons, the hero demo, the scroll reveal, and the latest release (version, size, SHA-256) from `api.github.com`, the one origin the CSP allows. Without it the page still works. Links use `releases/latest/download/warden.apk`, so a release needs no site change.
+- Motion uses the tokens at the top of `global.css` (`--ease-out`, `--ease-in-out`, `--press`, `--enter`, `--exit`), the same rules as the app: `scale(0.97)` on press, `transform`/`opacity` only, exits faster than entrances, nothing over 300ms on UI, hover effects only inside `@media (hover: hover) and (pointer: fine)`, and a reduced-motion variant that keeps fades and drops movement. The hero demo plays once (under 5 seconds), then waits for a tap; state changes use transitions, not keyframes, so they reverse cleanly mid-way.
+- Keep the copy in line with the README and the app: claim only what Warden does. Don't name phone makers (say "some phone makers", "your phone") or specific third-party apps; the tools Warden works with (Shizuku, Obtainium) are fine.
+- The CSP is a `<meta>` tag Astro generates with hashes (`security.csp` in `astro.config.mjs`); `public/_headers` adds what a `<meta>` CSP can't (`frame-ancestors`). Don't add inline `style` attributes or third-party scripts.
+- `public/og.jpg` (1200x630) and `docs/brand/warden-social-preview.png` (1280x640, for GitHub's social preview) are rendered from the icon; redo them if the icon or tagline changes.
+
 ## 🎨 Brand assets
 
 The icon geometry is defined in `res/values/paths.xml` and `res/drawable/ic_launcher_*.xml`. `docs/brand/warden-icon.svg` mirrors them. **Edit the resources first**, then update the SVG and brand sheet.
@@ -86,7 +101,7 @@ The icon geometry is defined in `res/values/paths.xml` and `res/drawable/ic_laun
 
 ## 🚦 Ask before you
 
-- ➕ Add, remove or upgrade a dependency (versions live in `gradle/libs.versions.toml`).
+- ➕ Add, remove or upgrade a dependency (versions live in `gradle/libs.versions.toml`, and in `site/package.json` for the website).
 - 🔐 Add or remove a manifest permission, or change the foreground service type.
 - 🔑 Change signing, `applicationId`, or the `--user 0` install option. Never read, print, move or commit anything in `~/.android/keystores/warden/` (the release keystore and `signing.env`).
 - 🚢 Publish a release (`scripts/release.sh` without `--dry-run`), push a tag, or delete a release. See [docs/RELEASING.md](docs/RELEASING.md).

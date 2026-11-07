@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  /** id of the element whose text is copied. */
+  target: string;
+  /** What is copied, for the accessible name: "Copy <label>". */
+  label: string;
+}
+
+const { target, label } = Astro.props;
+---
+
+<!-- Hidden until the script finds the Clipboard API and the text to copy. -->
+<button class="copy" type="button" data-copy={target} aria-label={`Copy ${label}`} hidden>
+  <span class="stack swap" aria-hidden="true">
+    <Icon name="copy" size={16} />
+    <Icon name="checkmark" size={16} />
+  </span>
+  <span class="stack swap" aria-hidden="true">
+    <span>Copy</span>
+    <span>Copied</span>
+  </span>
+</button>

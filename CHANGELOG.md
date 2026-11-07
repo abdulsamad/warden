@@ -14,7 +14,7 @@ First public release.
 
 - Switches off USB and wireless debugging, Developer options and accessibility services while a watched app is in front, and restores the exact previous state when it leaves or the screen turns off.
 - A permission prompt or share sheet that a watched app opens counts as part of that app, so settings don't come back on underneath it.
-- Protected launch widget, for apps that check the instant they open (such as Mumbai One) and refuse to run even though Warden is watching them. The widget switches the settings off first, then opens the app. Leaving the app restores everything as usual. If Warden can't protect the launch, the widget says why and opens the app normally.
+- Protected launch widget, for apps that check the instant they open and refuse to run even though Warden is watching them. The widget switches the settings off first, then opens the app. Leaving the app restores everything as usual. If Warden can't protect the launch, the widget says why and opens the app normally.
 - Add home screen widget, under Apps to watch: places a Protected launch widget already set to the app, through your launcher's own dialog. Launchers that can't do this get the manual steps.
 - Accessibility: all enabled services by default, or only the ones you pick.
 - Crash-safe restore: the previous state is saved before anything is switched off and restored after a crash, force stop, reboot or update.

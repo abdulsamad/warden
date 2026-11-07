@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="18 18 72 72">
+  <!-- Warden app icon. Geometry mirrors app/src/main/res (paths.xml, ic_launcher_*.xml); edit those first. -->
+  <defs>
+    <linearGradient id="bg" x1="20" y1="10" x2="88" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2F4DD8"/>
+      <stop offset="1" stop-color="#0B1440"/>
+    </linearGradient>
+    <clipPath id="mask"><rect x="18" y="18" width="72" height="72" rx="22"/></clipPath>
+  </defs>
+  <g clip-path="url(#mask)">
+    <rect width="108" height="108" fill="url(#bg)"/>
+    <g transform="translate(54,54) scale(0.86) translate(-54,-54)">
+      <path fill="#FFFFFF" fill-rule="evenodd" d="M54,27 C60,31 67,33 75,34 L75,53 C75,67 66,76.5 54,82 C42,76.5 33,67 33,53 L33,34 C41,33 48,31 54,27 Z M48,46 L60,46 C64.4,46 68,49.6 68,54 C68,58.4 64.4,62 60,62 L48,62 C43.6,62 40,58.4 40,54 C40,49.6 43.6,46 48,46 Z M42.8,54 A5.2,5.2 0 1,0 53.2,54 A5.2,5.2 0 1,0 42.8,54 Z"/>
+    </g>
+  </g>
+</svg>

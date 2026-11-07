@@ -136,6 +136,12 @@ a {
   text-underline-offset: 0.18em;
 }
 
+/* The script reveals things by clearing `hidden`, so it must win over any `display` set below,
+   or a copy button with nothing to copy would still show. */
+[hidden] {
+  display: none !important;
+}
+
 :focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 3px;
@@ -479,6 +485,10 @@ code {
 
 .hero-sha-label {
   white-space: nowrap;
+}
+
+.hero-sha a {
+  color: #ffffff;
 }
 
 /* Grows to the full checksum when there's room, so the copy button sits right after it. */

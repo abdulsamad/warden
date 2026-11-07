@@ -339,8 +339,8 @@ class ForegroundMonitorService : Service() {
      * System screens a watched app sends you to and expects you back from: the runtime permission
      * prompt, the app chooser, and the Settings app (for location, permissions, date and time).
      * While one is in front, a session carries on. Restoring there let the app catch the settings
-     * on as you came back: on a Galaxy S24, Mumbai One opens Location settings as it starts and
-     * re-checks on return, before the next poll could switch them off again. Resolved rather than
+     * on as you came back: one banking app opens Location settings as it starts and re-checks on
+     * return, before the next poll could switch them off again. Resolved rather than
      * hard-coded, because the packages differ by Android version and maker; never Warden or the
      * home screen, since leaving to home must always restore.
      */

@@ -249,7 +249,7 @@ Runs inside `withContext(NonCancellable)` so a restore always finishes, even whi
 
 ### Protected launch (widget)
 
-Polling has a blind spot. An app that checks Developer options in the first half second of a cold start (Mumbai One, a Flutter app, does exactly this) always beats the next 750 ms poll, sees the settings on and refuses to run. Reopening it loses the same race. The **Protected launch** widget closes the gap by switching the settings off before the app starts.
+Polling has a blind spot. An app that checks Developer options in the first half second of a cold start (some Flutter apps do exactly this) always beats the next 750 ms poll, sees the settings on and refuses to run. Reopening it loses the same race. The **Protected launch** widget closes the gap by switching the settings off before the app starts.
 
 ```mermaid
 sequenceDiagram

@@ -184,7 +184,7 @@ class MainActivity : ComponentActivity() {
     /**
      * A setup step that changed (say, Usage access granted in Settings) collapses with an animation.
      * Run during the system's own window animation back into the app, that collapse fights it for
-     * the GPU and drops to ~26 fps on a low-end phone (measured on a Moto E13). So after a full
+     * the GPU and drops to ~26 fps on a low-end phone. So after a full
      * hide, apply the refresh once the enter animation completes, with a fallback for resumes the
      * system sends no callback for. Returning from a dialog-style screen, which leaves this window
      * visible, has no enter animation and refreshes at once. Monitor recovery is not deferred.
@@ -401,7 +401,7 @@ private fun MainScreen(
     ) {
         // Faded here rather than with fadeIn/fadeOut, which render the whole screen through an
         // offscreen buffer that a low-end GPU must allocate and clear on every open and close
-        // (7.8 ms just to clear it on a Moto E13: a dropped frame). ModulateAlpha applies the alpha
+        // (7.8 ms just to clear it on a low-end phone: a dropped frame). ModulateAlpha applies the alpha
         // to each draw instead; on an opaque full-screen surface the difference isn't visible.
         val alpha by transition.animateFloat(
             transitionSpec = { if (targetState == EnterExitState.Visible) overlayIn else overlayOut },

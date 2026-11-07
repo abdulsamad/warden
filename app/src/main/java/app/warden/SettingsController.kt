@@ -161,7 +161,8 @@ object SettingsController {
     /**
      * Part of the USB debugging protection: Wireless debugging runs the same adb daemon, so an app
      * that looks for the daemon still finds it while this is on. Written only when it is on, so a
-     * phone that never uses it sees no extra write (Samsung's Auto Blocker manages it too).
+     * phone that never uses it sees no extra write (some phones' own security features manage it
+     * too).
      */
     private fun disableWirelessDebugging(context: Context): Boolean =
         readAdbWifiEnabled(context) == 0 || putGlobalInt(context, ADB_WIFI_ENABLED, 0)

@@ -17,7 +17,8 @@ const paths = {
   battery: '<rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 10v4"/><path d="M9.5 10v4"/>',
   lock: '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
-  checkmark: '<path d="M20 6 9 17l-5-5"/>',
+  // Drawn left to right, with pathLength="1" so CSS can draw it in without measuring it.
+  checkmark: '<path pathLength="1" d="M4 12l5 5L20 6"/>',
   arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
   bank: '<path d="m3 9 9-5 9 5"/><path d="M5 9v9"/><path d="M9.5 9v9"/><path d="M14.5 9v9"/><path d="M19 9v9"/><path d="M3 20h18"/>',
 } as const;

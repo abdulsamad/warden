@@ -6,19 +6,31 @@ interface Props {
   target: string;
   /** What is copied, for the accessible name: "Copy <label>". */
   label: string;
+  /** Just the icon, for tight spots. The accessible name and the "Copied" announcement stay. */
+  iconOnly?: boolean;
 }
 
-const { target, label } = Astro.props;
+const { target, label, iconOnly = false } = Astro.props;
 ---
 
 <!-- Hidden until the script finds the Clipboard API and the text to copy. -->
-<button class="copy" type="button" data-copy={target} aria-label={`Copy ${label}`} hidden>
-  <span class="stack swap" aria-hidden="true">
+<button
+  class:list={['copy', { 'copy-icon': iconOnly }]}
+  type="button"
+  data-copy={target}
+  aria-label={`Copy ${label}`}
+  hidden
+>
+  <span class="stack copy-icons" aria-hidden="true">
     <Icon name="copy" size={16} />
     <Icon name="checkmark" size={16} />
   </span>
-  <span class="stack swap" aria-hidden="true">
-    <span>Copy</span>
-    <span>Copied</span>
-  </span>
+  {
+    !iconOnly && (
+      <span class="stack swap" aria-hidden="true">
+        <span>Copy</span>
+        <span>Copied</span>
+      </span>
+    )
+  }
 </button>

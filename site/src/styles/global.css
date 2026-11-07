@@ -283,8 +283,68 @@ code {
   transition-duration: var(--enter);
 }
 
+/* Copy -> check is one motion: the copy icon shrinks away while the check draws itself in, done
+   by 300ms. Transitions, not keyframes, so a tap mid-way reverses from wherever it is. Going
+   back is quieter: the check just fades, and rewinds its stroke only once it's invisible. */
+.copy-icons > * {
+  transition:
+    opacity var(--enter) var(--ease-out),
+    filter var(--enter) var(--ease-out),
+    transform var(--enter) var(--ease-out);
+}
+
+.copy-icons > :last-child {
+  opacity: 0;
+  transform: scale(0.8);
+  transition-duration: var(--exit);
+}
+
+.copy-icons > :last-child path {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0s linear var(--exit);
+}
+
+[data-state='copied'] .copy-icons > :first-child {
+  opacity: 0;
+  filter: blur(2px);
+  transform: scale(0.6);
+  transition-duration: var(--exit);
+}
+
+[data-state='copied'] .copy-icons > :last-child {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--enter);
+}
+
+[data-state='copied'] .copy-icons > :last-child path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset var(--enter) var(--ease-out) 50ms;
+}
+
 .copy[data-state='copied'] {
   border-color: var(--primary);
+}
+
+/* Icon only: small to look at, but the invisible ::after keeps the tap area at 44px. */
+.copy-icon {
+  position: relative;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  min-height: 0;
+  padding: 0;
+}
+
+.copy-icon .stack {
+  place-items: center;
+}
+
+.copy-icon::after {
+  content: '';
+  position: absolute;
+  inset: -0.375rem;
 }
 
 /* ---- Hero -------------------------------------------------------------------------------- */
@@ -398,14 +458,15 @@ code {
 }
 
 /* Holds the height of the copy button from the start, then fades in once the checksum arrives.
-   If it never does, the line stays an invisible gap at the bottom of the column. */
+   If it never does, the line stays an invisible gap at the bottom of the column. The label and
+   checksum share a baseline, so the smaller mono text sits level with "SHA-256". */
 .hero-sha {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0.75rem;
-  min-height: 2.75rem;
-  margin-block-start: 0.5rem;
+  align-items: baseline;
+  gap: 0.25rem 0.625rem;
+  min-height: 2rem;
+  margin-block-start: 0.75rem;
   color: rgb(255 255 255 / 0.72);
   font-size: 0.9375rem;
   transition: opacity var(--enter) var(--ease-out);
@@ -438,14 +499,18 @@ code {
   text-overflow: ellipsis;
 }
 
+/* A soft fill, not a hairline ring: the baseline row can leave the button between pixels, and a
+   1px translucent ring there smears unevenly while a filled edge stays smooth. */
 .hero .copy {
-  border-color: rgb(255 255 255 / 0.3);
-  background-color: transparent;
+  align-self: center;
+  border-color: transparent;
+  background-color: rgb(255 255 255 / 0.12);
   color: #ffffff;
 }
 
 .hero .copy[data-state='copied'] {
-  border-color: #ffffff;
+  border-color: transparent;
+  background-color: rgb(255 255 255 / 0.22);
 }
 
 /* ---- Demo card --------------------------------------------------------------------------- */
@@ -1065,8 +1130,8 @@ code {
   }
 
   .hero .copy:hover {
-    border-color: rgb(255 255 255 / 0.6);
-    background-color: rgb(255 255 255 / 0.1);
+    border-color: transparent;
+    background-color: rgb(255 255 255 / 0.2);
   }
 
   .faq summary:hover {
@@ -1099,9 +1164,16 @@ code {
 
   .swap > *,
   [data-state='copied'] .swap > *,
-  .demo .swap > * {
+  .demo .swap > *,
+  .copy-icons > *,
+  [data-state='copied'] .copy-icons > * {
     transform: none !important;
     filter: none !important;
+  }
+
+  /* The check is simply there, and fades in with the rest. */
+  .copy-icons > :last-child path {
+    stroke-dashoffset: 0 !important;
   }
 
   .switch::after {

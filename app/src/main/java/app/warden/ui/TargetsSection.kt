@@ -43,6 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -93,7 +94,8 @@ fun TargetsSection(
     LaunchedEffect(snackbar) {
         LaunchWidgets.added.collect { label ->
             snackbar.currentSnackbarData?.dismiss()
-            launch { snackbar.showSnackbar(addedMessage.format(label)) }
+            // Long: it carries the one-time force stop step, too much to read in 4 s.
+            launch { snackbar.showSnackbar(addedMessage.format(label), duration = SnackbarDuration.Long) }
         }
     }
 

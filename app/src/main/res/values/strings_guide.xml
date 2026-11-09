@@ -34,8 +34,8 @@
     <string name="guide_widget_title">Watched app still complains?</string>
     <string name="guide_widget_lead">A few apps check before Warden can switch settings off, so opened from their own icon they still see them on. A Warden widget fixes this: it switches settings off first, then opens the app.</string>
     <string name="guide_widget_add">Under Apps to watch, tap Add home screen widget and confirm.</string>
-    <string name="guide_widget_open">Always open the app from that widget, not its own icon from the drawer.</string>
-    <string name="guide_widget_close">If the app is already open, swipe it away in Recents first.</string>
+    <string name="guide_widget_close">If the app is open, force stop it once: long-press its icon, tap App info, then Force stop.</string>
+    <string name="guide_widget_open">From then on, always open the app from that widget, not its own icon from the drawer or from Recents.</string>
     <string name="guide_widget_note">Only needed for apps that still complain. Leaving the app restores everything as usual.</string>
 
     <!-- Pro tips -->
@@ -50,7 +50,7 @@
     <string name="guide_trouble_started">Check the top card says Watching. If it says Monitor off, tap Start monitor.</string>
     <string name="guide_trouble_restricted">Usage access greyed out? In Warden\'s app settings, tap the three-dot menu, then Allow restricted settings.</string>
     <string name="guide_trouble_listed">Make sure the app is in Apps to watch.</string>
-    <string name="guide_trouble_widget">App still complains? Add a Warden widget for it under Apps to watch, close the app fully, then always open it from that widget, not its own icon from the drawer.</string>
+    <string name="guide_trouble_widget">App still complains? Add a Warden widget for it under Apps to watch, force stop the app once, then always open it from that widget, not its own icon from the drawer or from Recents.</string>
     <string name="guide_trouble_a11y">Set accessibility back to All services.</string>
     <string name="guide_trouble_test">Run Test on this device again after big updates.</string>
     <string name="guide_trouble_root">Root or modified-system checks are beyond Warden.</string>

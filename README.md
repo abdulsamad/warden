@@ -145,7 +145,7 @@ A few apps check **the instant they start**. They beat that second, see a settin
 
 1. Make sure the app is under **Apps to watch** and the monitor is on.
 2. In Warden, under **Apps to watch**, tap **Add home screen widget** (pick the app if you watch several), then confirm in your launcher's dialog.
-3. If the app is open, close it fully (swipe it away in Recents): the widget can't restart an app that's already running. From now on, always open it from that Warden widget, not its own icon from the drawer. The widget shows the app's icon with a small Warden badge.
+3. If the app is open, force stop it once (long-press its icon, tap **App info**, then **Force stop**). Until now it was opened from its own icon, so it may already have caught the settings on, and bringing it back can't undo a check that already ran. Swiping it away in Recents usually ends it too, but not on every phone. From now on, always open it from that Warden widget, not its own icon from the drawer or from Recents. That includes coming back to it: leaving restores your settings, and the widget switches them off again before bringing the app back. The widget shows the app's icon with a small Warden badge.
 
 Launcher doesn't offer to add it? Long-press your home screen, tap **Widgets**, find **Warden**, drag **Protected launch** onto the home screen, and pick the app. Only watched apps are listed.
 
@@ -157,7 +157,7 @@ Check these in order:
 
 1. **Is the monitor on?** The top card should say **Watching**. If it says **Monitor off**, tap **Start monitor**. Setup alone doesn't start it.
 2. **Is the app listed?** It must be under **Apps to watch**.
-3. **App still complains?** It checks the instant it opens, before Warden can react. Add a [Warden widget](#-apps-that-check-the-moment-they-open) for it under **Apps to watch**, close the app fully, then always open it from that widget, not its own icon from the drawer.
+3. **App still complains?** It checks the instant it opens, before Warden can react. Add a [Warden widget](#-apps-that-check-the-moment-they-open) for it under **Apps to watch**, force stop the app once, then always open it from that widget, not its own icon from the drawer or from Recents.
 4. **Accessibility:** if you picked specific services, switch back to **All services**.
 5. **Run Test on this device** again, especially after a big Android update.
 6. **Root checks:** Warden can't help with apps that also look for root or a modified system.

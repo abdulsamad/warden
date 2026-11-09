@@ -19,11 +19,11 @@
 
     <!-- From Apps to watch: placing a widget from inside Warden -->
     <string name="widget_add">Add home screen widget</string>
-    <string name="widget_add_hint">App still complains? Add a Warden widget for it here and always open the app from that widget, not its own icon from the drawer.</string>
+    <string name="widget_add_hint">App still complains? Add a Warden widget for it here and always open the app from that widget, not its own icon from the drawer or from Recents.</string>
     <string name="widget_add_choose_title">Add a widget for</string>
     <string name="widget_add_for_cd">Add %1$s widget</string>
     <string name="widget_add_cancel">Cancel</string>
-    <string name="widget_add_done">%1$s widget added to your home screen</string>
+    <string name="widget_add_done">%1$s widget added. If the app is open, force stop it once, then open it from the widget.</string>
 
     <!-- When the launcher can't place widgets for an app -->
     <string name="widget_manual_title">Add it from your home screen</string>

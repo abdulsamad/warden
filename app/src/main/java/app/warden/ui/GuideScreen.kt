@@ -103,8 +103,8 @@ private val sections = listOf(
         lead = R.string.guide_widget_lead,
         items = listOf(
             R.string.guide_widget_add,
-            R.string.guide_widget_open,
             R.string.guide_widget_close,
+            R.string.guide_widget_open,
         ),
         numbered = true,
         note = R.string.guide_widget_note,

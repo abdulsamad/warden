@@ -6,6 +6,13 @@ All notable changes to Warden are listed here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-10
+
+### Changed
+
+- Help and the Apps to watch hint now say to come back to a widget-protected app through its widget, not Recents. Leaving restores your settings, and an app that checks again when you return would catch them on; the widget switches them off before bringing the app back.
+- After adding a widget, the confirmation and Help now say to force stop the app once if it's open, then open it from the widget. An app opened from its own icon may already have caught the settings on.
+
 ## [1.0.0] - 2026-11-07
 
 First public release.

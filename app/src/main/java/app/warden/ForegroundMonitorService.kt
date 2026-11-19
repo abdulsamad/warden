@@ -40,8 +40,8 @@ import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Watches the foreground app (via UsageStatsManager, not an accessibility service) and genuinely
- * disables the managed settings while a target app is in front, restoring them the moment it is no
- * longer the active, visible app (or Warden is paused).
+ * disables the managed settings while a target app is in front, restoring them [LEAVE_GRACE_MS]
+ * after it stops being the active, visible app, or at once on screen off, pause or opening Warden.
  *
  * Memory/battery: one reused event object, change-detection so transitions run only on an actual
  * foreground change, the active snapshot kept in memory (DataStore is touched only at transitions as
@@ -62,7 +62,9 @@ class ForegroundMonitorService : Service() {
         val appLabel: String,
         val disabled: Set<Protection>,
         val failed: Set<Protection>,
-    )
+    ) {
+        fun state(leaving: Boolean = false) = MonitorState.Protecting(packageName, appLabel, disabled, failed, leaving)
+    }
 
     /**
      * A target opened from a Warden widget, see [ACTION_PROTECT_LAUNCH]. [since] is wall-clock
@@ -108,6 +110,15 @@ class ForegroundMonitorService : Service() {
      * only: a new process starts without one.
      */
     private val launchHold = AtomicReference<LaunchHold?>(null)
+
+    /**
+     * When the session of an app the user has left gets restored (monotonic), 0 while it is in
+     * front. Until then the settings stay off, so a short trip to the camera, a browser tab or
+     * Recents and back never shows the app its settings on: restoring at once and disabling again
+     * on return loses that race to an app that checks as it resumes. Written under
+     * [SettingsController.lock].
+     */
+    @Volatile private var leaveDeadline = 0L
 
     /** Completed once config is loaded and any leftover snapshot adopted. */
     private val ready = CompletableDeferred<Unit>()
@@ -321,7 +332,9 @@ class ForegroundMonitorService : Service() {
         // another thread sees either the hold or the app, never a gap between them. Evaluate even
         // when the app in front looks unchanged: the target may have come and gone within one poll.
         if (holdArrived) launchHold.compareAndSet(hold, null)
-        if (changed || holdArrived || needsEvaluation || pauseExpired(now) || holdExpired()) evaluate()
+        if (changed || holdArrived || needsEvaluation || pauseExpired(now) || holdExpired() || graceExpired()) {
+            evaluate()
+        }
     }
 
     /**
@@ -337,7 +350,8 @@ class ForegroundMonitorService : Service() {
 
     /**
      * System screens a watched app sends you to and expects you back from: the runtime permission
-     * prompt, the app chooser, and the Settings app (for location, permissions, date and time).
+     * prompt, the app chooser, the Settings app (for location, permissions, date and time), and
+     * Google Play services sheets.
      * While one is in front, a session carries on. Restoring there let the app catch the settings
      * on as you came back: one banking app opens Location settings as it starts and re-checks on
      * return, before the next poll could switch them off again. Resolved rather than
@@ -355,8 +369,38 @@ class ForegroundMonitorService : Service() {
             Intent(Settings.ACTION_DATE_SETTINGS),
         )
             .mapNotNull(::resolvePackage)
+            // Google Play services draws the sheets apps ask for mid-flow: the phone number
+            // picker on a mobile number field, account sign-in, the SMS code prompt. It has no
+            // launcher screen, so it only comes in front on top of the app that asked.
+            .plus(GMS_PACKAGE)
             .filter { it != packageName && it != home }
             .toSet()
+    }
+
+    /** Every installed home screen, not only the default: none may ever carry a session on. */
+    private val homePackages: Set<String> by lazy {
+        val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+        runCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.queryIntentActivities(intent, 0)
+            }.mapTo(HashSet()) { it.activityInfo.packageName }
+        }.getOrDefault(emptySet())
+    }
+
+    /**
+     * Whether [pkg] in front means the watched app put a screen over itself rather than the user
+     * leaving: one of [overlayPackages], or any app with no launcher icon. Nobody opens those on
+     * their own, they only come up for the app that asked: the file and photo pickers, the
+     * passkey sheet. Home screens have no icon either and are ruled out first. If the lookup
+     * fails the answer is no, which restores.
+     */
+    private fun isOverlay(pkg: String): Boolean {
+        if (pkg in overlayPackages) return true
+        if (pkg == packageName || pkg in homePackages) return false
+        return runCatching { packageManager.getLaunchIntentForPackage(pkg) == null }.getOrDefault(false)
     }
 
     private fun resolvePackage(intent: Intent): String? = runCatching {
@@ -371,6 +415,9 @@ class ForegroundMonitorService : Service() {
         }
         info?.activityInfo?.packageName
     }.getOrNull()
+
+    private fun graceExpired(): Boolean =
+        leaveDeadline.let { it != 0L && SystemClock.elapsedRealtime() >= it }
 
     private fun holdExpired(): Boolean =
         launchHold.get()?.let { SystemClock.elapsedRealtime() >= it.untilElapsed } == true
@@ -397,19 +444,39 @@ class ForegroundMonitorService : Service() {
         val target = foreground?.takeIf { !paused }?.let { fg ->
             when {
                 fg in cfg.targetPackages -> fg
-                // A permission prompt or app chooser the watched app opened sits on top of it: the
-                // user hasn't left. Restoring here and disabling again on the way back would hand
-                // the app a fresh race when it re-checks on resume.
-                fg in overlayPackages -> session?.packageName?.takeIf { it in cfg.targetPackages }
+                // A permission prompt, picker or chooser the watched app opened sits on top of it:
+                // the user hasn't left. Restoring here and disabling again on the way back would
+                // hand the app a fresh race when it re-checks on resume.
+                // Only straight from the watched app: once the user has left it, a picker some
+                // other app opens must not bring the session back.
+                isOverlay(fg) -> session?.packageName?.takeIf { it in cfg.targetPackages && leaveDeadline == 0L }
                 else -> null
             }
         }
 
         if (target == null) {
-            if (activeSnapshot != null) leave()
+            val current = session
+            // The grace period is for trips to another app, home or Recents. Screen off, pause,
+            // a removed app, Warden itself in front (its status must show the real state) and a
+            // snapshot from a previous process all restore at once.
+            val linger = current != null && !adopted && !paused && foreground != null &&
+                foreground != packageName && current.packageName in cfg.targetPackages
+            when {
+                activeSnapshot == null -> Unit
+                !linger || graceExpired() -> leave()
+                leaveDeadline == 0L -> {
+                    leaveDeadline = SystemClock.elapsedRealtime() + LEAVE_GRACE_MS
+                    publish(current!!.state(leaving = true))
+                }
+            }
         } else {
             val current = session
+            val returning = leaveDeadline != 0L
+            leaveDeadline = 0L
             when {
+                // Back within the grace period: the same session carries on, nothing to write.
+                returning && current != null && !adopted && current.packageName == target ->
+                    publish(current.state())
                 activeSnapshot == null -> enter(target, cfg)
                 // A snapshot from a previous process while a target is in front: put things back
                 // and start a clean session, so the snapshot we hold is the real "before" state.
@@ -438,8 +505,7 @@ class ForegroundMonitorService : Service() {
             val failed = SettingsController.applyDisabled(applicationContext, cfg)
             val disabled = SettingsController.managed(cfg) - failed
             val label = resolveLabel(pkg)
-            session = Session(pkg, label, disabled, failed)
-            publish(MonitorState.Protecting(pkg, label, disabled, failed))
+            session = Session(pkg, label, disabled, failed).also { publish(it.state()) }
             if (failed.isNotEmpty()) EngineNotifications.postDisableAlert(this, label, failed)
             runCatching { log.recordEnter(pkg, label, System.currentTimeMillis(), disabled, failed) }
         } catch (e: Exception) {
@@ -453,8 +519,7 @@ class ForegroundMonitorService : Service() {
     /** Moves straight from one target to another without a restore/disable round trip. */
     private suspend fun switchSession(previous: Session, pkg: String) {
         val label = resolveLabel(pkg)
-        session = Session(pkg, label, previous.disabled, previous.failed)
-        publish(MonitorState.Protecting(pkg, label, previous.disabled, previous.failed))
+        session = Session(pkg, label, previous.disabled, previous.failed).also { publish(it.state()) }
         runCatching {
             log.recordLeave(emptySet(), recovered = false)
             log.recordEnter(pkg, label, System.currentTimeMillis(), previous.disabled, previous.failed)
@@ -478,6 +543,7 @@ class ForegroundMonitorService : Service() {
             activeSnapshot = null
             adopted = false
             session = null
+            leaveDeadline = 0L
             if (!alreadyRecovered) {
                 val hadRestoreFailure = lastRestoreFailed.isNotEmpty()
                 lastRestoreFailed = failed
@@ -606,12 +672,16 @@ class ForegroundMonitorService : Service() {
         private const val REQUEST_HIDE = 3
         private const val REQUEST_DISMISSED = 4
         private const val TAG = "WardenMonitor"
+
+        /** How long settings stay off after the user leaves a watched app, in case they come back. */
+        private const val LEAVE_GRACE_MS = 15_000L
         private const val POLL_INTERVAL_MS = 750L
         private const val IDLE_INTERVAL_MS = 5_000L
         private const val QUERY_OVERLAP_MS = 2_000L
 
         /** What Activity.requestPermissions sends; PackageManager's constant for it is hidden. */
         private const val ACTION_REQUEST_PERMISSIONS = "android.content.pm.action.REQUEST_PERMISSIONS"
+        private const val GMS_PACKAGE = "com.google.android.gms"
         private const val INITIAL_WINDOW_MS = 6 * 60 * 60_000L
 
         fun start(context: Context) {

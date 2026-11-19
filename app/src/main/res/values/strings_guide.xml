@@ -7,7 +7,7 @@
 
     <!-- Restore promise (highlighted) -->
     <string name="guide_restore_title">Everything comes back by itself</string>
-    <string name="guide_restore_lead">When a watched app opens, Warden really switches off Developer options, USB and wireless debugging, and accessibility apps. When you leave, it puts back exactly what was on.</string>
+    <string name="guide_restore_lead">When a watched app opens, Warden really switches off Developer options, USB and wireless debugging, and accessibility apps. About 15 seconds after you leave, or as soon as the screen turns off, it puts back exactly what was on.</string>
     <string name="guide_restore_crash">Even after a crash or reboot, it restores from a saved copy.</string>
     <string name="guide_restore_changes">Changes you make while a watched app is open are undone when you leave.</string>
 

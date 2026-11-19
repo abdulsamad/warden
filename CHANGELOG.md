@@ -6,6 +6,16 @@ All notable changes to Warden are listed here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-19
+
+### Changed
+
+- Settings now come back 15 seconds after you leave a watched app instead of at once. A quick trip to the camera, a browser tab, a payment app or Recents and back no longer gives the app a moment with them on. Turning the screen off, pausing or opening Warden still restores right away.
+
+### Fixed
+
+- Screens a watched app opens from an app with no home screen icon now count as part of that app: the phone number picker, Google sign-in and SMS code prompts (drawn by Google Play services), the file and photo pickers, the passkey sheet. Before, settings came back on underneath them and the app caught them on when you returned.
+
 ## [1.0.1] - 2026-11-10
 
 ### Changed

@@ -81,6 +81,7 @@ object EngineNotifications {
             }
         is MonitorState.Paused -> pausedText(context, state.untilMillis)
         is MonitorState.Protecting -> when {
+            state.leaving -> context.getString(R.string.engine_notif_leaving, state.appLabel)
             state.failed.isNotEmpty() ->
                 context.getString(R.string.engine_notif_couldnt_turn_off, joinProtections(context, state.failed))
             state.disabled.isEmpty() -> context.getString(R.string.engine_notif_protecting, state.appLabel)

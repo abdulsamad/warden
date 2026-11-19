@@ -29,12 +29,16 @@ sealed interface MonitorState {
     /** Running but paused by the user until [untilMillis] (wall clock). Nothing disabled. */
     data class Paused(val untilMillis: Long) : MonitorState
 
-    /** A target app is in front. [disabled] were switched off; [failed] could not be. */
+    /**
+     * A target app is in front. [disabled] were switched off; [failed] could not be. [leaving]:
+     * the user has left it and the settings come back shortly unless they return.
+     */
     data class Protecting(
         val packageName: String,
         val appLabel: String,
         val disabled: Set<Protection>,
         val failed: Set<Protection>,
+        val leaving: Boolean = false,
     ) : MonitorState
 }
 

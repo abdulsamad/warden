@@ -100,7 +100,10 @@ class WardenTileService : TileService() {
                     MonitorState.Stopped -> getString(R.string.engine_tile_not_running)
                     is MonitorState.Watching -> EngineNotifications.watchingText(this, state.targetCount)
                     is MonitorState.Paused -> EngineNotifications.pausedText(this, state.untilMillis)
-                    is MonitorState.Protecting -> getString(R.string.engine_notif_protecting, state.appLabel)
+                    is MonitorState.Protecting -> getString(
+                        if (state.leaving) R.string.engine_notif_leaving else R.string.engine_notif_protecting,
+                        state.appLabel,
+                    )
                 }
             }
         }

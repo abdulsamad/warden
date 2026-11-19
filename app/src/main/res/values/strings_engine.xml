@@ -21,6 +21,7 @@
         <item quantity="one">Protecting %1$s - %2$d setting off</item>
         <item quantity="other">Protecting %1$s - %2$d settings off</item>
     </plurals>
+    <string name="engine_notif_leaving">Left %1$s - settings come back shortly</string>
     <string name="engine_notif_couldnt_turn_off">Couldn\'t turn off: %1$s</string>
     <string name="engine_notif_couldnt_restore">Couldn\'t restore: %1$s</string>
     <string name="engine_action_pause">Pause 1 hour</string>

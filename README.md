@@ -4,7 +4,7 @@
 
 # Warden
 
-**Switches off Developer options, USB and wireless debugging, and accessibility services while picky apps are open - and puts everything back the moment you leave.**
+**Switches off Developer options, USB and wireless debugging, and accessibility services while picky apps are open - and puts everything back when you leave.**
 
 ![Platform](https://img.shields.io/badge/platform-Android%208.0%2B-3DDC84?logo=android&logoColor=white)
 ![Target SDK](https://img.shields.io/badge/targetSdk-35-2F4DD8)
@@ -26,7 +26,7 @@ Warden does it for you:
 
 1. You pick the **apps to watch** and **what to switch off**.
 2. When a watched app comes to the front, Warden **really switches those settings off**. Nothing is spoofed or hidden - the app sees a clean phone because it is one.
-3. When you leave the app (or the screen turns off), Warden **restores the exact previous state**: the same accessibility services, in the same order, and anything that was already off stays off.
+3. About 15 seconds after you leave the app (or as soon as the screen turns off), Warden **restores the exact previous state**: the same accessibility services, in the same order, and anything that was already off stays off.
 
 ## ✨ Features
 

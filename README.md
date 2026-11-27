@@ -40,7 +40,7 @@ Warden does it for you:
 | 💥  | **Crash-safe**                   | The snapshot is saved _before_ anything is disabled. If Warden is killed or the phone reboots mid-session, it restores on the next start.                                                              |
 | ⏸️  | **Pause**                        | For 15 minutes, an hour, or until the screen turns off. **Pause 1 hour** is one tap on the notification.                                                                                               |
 | 🧩  | **Quick Settings tile**          | Turn the monitor on or off from the shade; long-press opens the app.                                                                                                                                   |
-| 🚀  | **Protected launch widget**      | For apps that check the instant they open: the widget switches settings off first, then opens the app. Add one from **Apps to watch** in one tap. See [below](#-apps-that-check-the-moment-they-open). |
+| 🚀  | **Protected launch shortcut**    | For apps that check the instant they open: a shortcut switches settings off first, then opens the app. Add one from **Apps to watch** in one tap. See [below](#-apps-that-check-the-moment-they-open). |
 | 🧪  | **On-device self-test**          | Flips each managed setting off, verifies it, and restores it, so you know your OEM build cooperates.                                                                                                   |
 | 📜  | **Activity log**                 | The last 20 protected sessions, including anything that failed to disable or restore.                                                                                                                  |
 | ↩️  | **Undo**                         | Removing a watched app or clearing the log can be undone from the snackbar.                                                                                                                            |
@@ -141,15 +141,17 @@ Warden notices a watched app within about a second of it opening. Most apps chec
 A few apps check **the instant they start**. They beat that second, see a setting still on (Developer options, USB debugging or an accessibility app), and refuse to run, even though Warden switches everything off a moment later. Reopening doesn't help: they win the race every time.
 
 > [!IMPORTANT]
-> For those apps, open them from Warden's **Protected launch** widget instead of their own icon. The widget switches the settings off **first**, waits for Warden to confirm, **then** opens the app, so its very first check sees a clean phone.
+> For those apps, open them from a Warden **Protected launch** shortcut instead of their own icon. The shortcut switches the settings off **first**, waits for Warden to confirm, **then** opens the app, so its very first check sees a clean phone.
 
 1. Make sure the app is under **Apps to watch** and the monitor is on.
-2. In Warden, under **Apps to watch**, tap **Add home screen widget** (pick the app if you watch several), then confirm in your launcher's dialog.
-3. If the app is open, force stop it once (long-press its icon, tap **App info**, then **Force stop**). Until now it was opened from its own icon, so it may already have caught the settings on, and bringing it back can't undo a check that already ran. Swiping it away in Recents usually ends it too, but not on every phone. From now on, always open it from that Warden widget, not its own icon from the drawer or from Recents. That includes coming back to it: leaving restores your settings, and the widget switches them off again before bringing the app back. The widget shows the app's icon with a small Warden badge.
+2. In Warden, under **Apps to watch**, tap **Add home screen shortcut** (pick the app if you watch several), then confirm in your launcher's dialog.
+3. If the app is open, force stop it once (long-press its icon, tap **App info**, then **Force stop**). Until now it was opened from its own icon, so it may already have caught the settings on, and bringing it back can't undo a check that already ran. Swiping it away in Recents usually ends it too, but not on every phone. From now on, always open it from that Warden shortcut, not its own icon from the drawer or from Recents. That includes coming back to it: leaving restores your settings, and the shortcut switches them off again before bringing the app back.
 
-Launcher doesn't offer to add it? Long-press your home screen, tap **Widgets**, find **Warden**, drag **Protected launch** onto the home screen, and pick the app. Only watched apps are listed.
+The shortcut shows the app's icon, usually with a small Warden badge, and goes in a folder like any icon, so you can keep all of them together.
 
-Leaving the app restores everything exactly as usual. If Warden can't protect the launch (monitor off, paused, or the app isn't watched), the widget says why and opens the app as its icon would.
+Launcher can't add shortcuts? Warden adds a **Protected launch** widget instead. It works the same way but can't go in a folder. If your launcher can't add that either, long-press your home screen, tap **Widgets**, find **Warden**, drag **Protected launch** onto the home screen, and pick the app. Only watched apps are listed. Widgets you already added keep working.
+
+Leaving the app restores everything exactly as usual. If Warden can't protect the launch (monitor off, paused, or the app isn't watched), the shortcut or widget says why and opens the app as its icon would.
 
 ## 🩺 Not working?
 
@@ -157,7 +159,7 @@ Check these in order:
 
 1. **Is the monitor on?** The top card should say **Watching**. If it says **Monitor off**, tap **Start monitor**. Setup alone doesn't start it.
 2. **Is the app listed?** It must be under **Apps to watch**.
-3. **App still complains?** It checks the instant it opens, before Warden can react. Add a [Warden widget](#-apps-that-check-the-moment-they-open) for it under **Apps to watch**, force stop the app once, then always open it from that widget, not its own icon from the drawer or from Recents.
+3. **App still complains?** It checks the instant it opens, before Warden can react. Add a [Warden shortcut](#-apps-that-check-the-moment-they-open) for it under **Apps to watch**, force stop the app once, then always open it from that shortcut, not its own icon from the drawer or from Recents.
 4. **Accessibility:** if you picked specific services, switch back to **All services**.
 5. **Run Test on this device** again, especially after a big Android update.
 6. **Root checks:** Warden can't help with apps that also look for root or a modified system.
@@ -198,7 +200,8 @@ warden/
 │   ├── ActivityLog.kt                # 📜 bounded session history
 │   ├── EngineNotifications.kt        # 🔔 channels, text, alerts
 │   ├── WardenTileService.kt          # 🧩 Quick Settings tile
-│   ├── LaunchWidgets.kt              # 🚀 Protected launch widget
+│   ├── LaunchShortcuts.kt            # 🚀 Protected launch shortcut (fits in a folder)
+│   ├── LaunchWidgets.kt              #    Protected launch widget
 │   ├── ProtectedLaunchActivity.kt    #    switches settings off, then opens the app
 │   ├── BootReceiver.kt               # 🔁 boot / update hook
 │   ├── ShizukuGrant.kt               # 📲 optional no-computer grant

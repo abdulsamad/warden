@@ -25,7 +25,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import app.warden.LaunchShortcuts
 import app.warden.LaunchWidgets
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -82,20 +85,25 @@ fun TargetsSection(
     val scope = rememberCoroutineScope()
     val removedMessage = stringResource(R.string.targets_removed)
     val undoLabel = stringResource(R.string.main_undo)
-    val addedMessage = stringResource(R.string.widget_add_done)
-    // Watched apps that are installed, for the widget action.
-    val widgetApps = remember(targetLabels) {
+    val shortcutAddedMessage = stringResource(R.string.shortcut_add_done)
+    val widgetAddedMessage = stringResource(R.string.widget_add_done)
+    // Watched apps that are installed, for the home screen action.
+    val homeScreenApps = remember(targetLabels) {
         targetLabels.orEmpty()
             .mapNotNull { (pkg, label) -> label?.let { AppInfo(pkg, it) } }
             .sortedBy { it.label.lowercase() }
     }
 
-    // The launcher placed a widget asked for below: confirm it here, where the request started.
+    // The launcher placed a shortcut or widget asked for below: confirm it here, where the request
+    // started.
     LaunchedEffect(snackbar) {
-        LaunchWidgets.added.collect { label ->
+        merge(
+            LaunchShortcuts.added.map { shortcutAddedMessage.format(it) },
+            LaunchWidgets.added.map { widgetAddedMessage.format(it) },
+        ).collect { message ->
             snackbar.currentSnackbarData?.dismiss()
             // Long: it carries the one-time force stop step, too much to read in 4 s.
-            launch { snackbar.showSnackbar(addedMessage.format(label), duration = SnackbarDuration.Long) }
+            launch { snackbar.showSnackbar(message, duration = SnackbarDuration.Long) }
         }
     }
 
@@ -154,11 +162,11 @@ fun TargetsSection(
             // Fade only: the column's animateContentSize already animates the height. An expanding
             // reveal inside it nested two size animations, so the card grew late and clipped this.
             AnimatedVisibility(
-                visible = widgetApps.isNotEmpty(),
+                visible = homeScreenApps.isNotEmpty(),
                 enter = fadeIn(motionTween()),
                 exit = ExitTransition.None,
             ) {
-                WidgetAction(widgetApps, vm.icons)
+                HomeScreenAction(homeScreenApps, vm.icons)
             }
         }
     }
@@ -213,27 +221,30 @@ private fun TargetChip(
     )
 }
 
-/** Which widget dialog is open. An enum, so it survives rotation and fold in rememberSaveable. */
-private enum class WidgetDialog { None, Choose, Manual }
+/** Which dialog is open. An enum, so it survives rotation and fold in rememberSaveable. */
+private enum class HomeScreenDialog { None, Choose, Manual }
 
 /**
- * "Add home screen widget": places a Protected launch widget already set to the app, through the
- * launcher's own dialog. One watched app pins at once; several ask which first. Launchers that
- * can't place widgets for an app get the manual steps. Secondary to "Add or remove apps", so a
- * text button with a one-line reason above it.
+ * "Add home screen shortcut": places a Protected launch shortcut for the app, through the
+ * launcher's own dialog. A shortcut, not a widget, because launchers let a shortcut into a folder.
+ * One watched app pins at once; several ask which first. A launcher that can't place shortcuts gets
+ * a widget instead, and one that can place neither gets the widget's manual steps. Secondary to
+ * "Add or remove apps", so a text button with a one-line reason above it.
  */
 @Composable
-private fun WidgetAction(apps: List<AppInfo>, icons: TargetsIconCache) {
+private fun HomeScreenAction(apps: List<AppInfo>, icons: TargetsIconCache) {
     val context = LocalContext.current
-    var dialog by rememberSaveable { mutableStateOf(WidgetDialog.None) }
+    var dialog by rememberSaveable { mutableStateOf(HomeScreenDialog.None) }
     val pin: (String) -> Unit = { pkg ->
-        if (!LaunchWidgets.requestPin(context, pkg)) dialog = WidgetDialog.Manual
+        if (!LaunchShortcuts.requestPin(context, pkg) && !LaunchWidgets.requestPin(context, pkg)) {
+            dialog = HomeScreenDialog.Manual
+        }
     }
 
     Column {
         Spacer(Modifier.height(16.dp))
         Text(
-            stringResource(R.string.widget_add_hint),
+            stringResource(R.string.shortcut_add_hint),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -241,9 +252,10 @@ private fun WidgetAction(apps: List<AppInfo>, icons: TargetsIconCache) {
         TextButton(
             onClick = {
                 when {
-                    !LaunchWidgets.canRequestPin(context) -> dialog = WidgetDialog.Manual
+                    !LaunchShortcuts.canRequestPin(context) && !LaunchWidgets.canRequestPin(context) ->
+                        dialog = HomeScreenDialog.Manual
                     apps.size == 1 -> pin(apps.single().packageName)
-                    else -> dialog = WidgetDialog.Choose
+                    else -> dialog = HomeScreenDialog.Choose
                 }
             },
             interactionSource = source,
@@ -251,41 +263,41 @@ private fun WidgetAction(apps: List<AppInfo>, icons: TargetsIconCache) {
             modifier = SetupButtonModifier
                 // Optical alignment: the icon lines up with the line above; the press area keeps
                 // its padding around it.
-                .offset(x = -WidgetButtonInset)
+                .offset(x = -HomeScreenButtonInset)
                 .pressScale(source),
         ) {
             Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(ButtonDefaults.IconSize))
             Spacer(Modifier.width(ButtonDefaults.IconSpacing))
-            Text(stringResource(R.string.widget_add))
+            Text(stringResource(R.string.shortcut_add))
         }
     }
 
     when (dialog) {
-        WidgetDialog.Choose -> ChooseWidgetAppDialog(apps, icons) { picked ->
-            dialog = WidgetDialog.None
+        HomeScreenDialog.Choose -> ChooseHomeScreenAppDialog(apps, icons) { picked ->
+            dialog = HomeScreenDialog.None
             picked?.let(pin)
         }
-        WidgetDialog.Manual -> ManualWidgetStepsDialog { dialog = WidgetDialog.None }
-        WidgetDialog.None -> Unit
+        HomeScreenDialog.Manual -> ManualWidgetStepsDialog { dialog = HomeScreenDialog.None }
+        HomeScreenDialog.None -> Unit
     }
 }
 
 /** Start padding of TextButtonWithIconContentPadding, undone so the icon aligns with text above. */
-private val WidgetButtonInset = 12.dp
+private val HomeScreenButtonInset = 12.dp
 
 /**
- * Which app the widget is for. The pick is acted on only after this dialog has finished leaving,
+ * Which app the shortcut is for. The pick is acted on only after this dialog has finished leaving,
  * so the launcher's dialog never stacks on top of one still on its way out.
  */
 @Composable
-private fun ChooseWidgetAppDialog(
+private fun ChooseHomeScreenAppDialog(
     apps: List<AppInfo>,
     icons: TargetsIconCache,
     onClosed: (picked: String?) -> Unit,
 ) {
     var picked by remember { mutableStateOf<String?>(null) }
     AnimatedDialog(onDismissRequest = { onClosed(picked) }) { dismiss ->
-        val title = stringResource(R.string.widget_add_choose_title)
+        val title = stringResource(R.string.shortcut_add_choose_title)
         Column(
             Modifier
                 .padding(vertical = 16.dp)
@@ -307,7 +319,7 @@ private fun ChooseWidgetAppDialog(
                     .verticalScroll(rememberScrollState()),
             ) {
                 apps.forEach { app ->
-                    val clickLabel = stringResource(R.string.widget_add_for_cd, app.label)
+                    val clickLabel = stringResource(R.string.shortcut_add_for_cd, app.label)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -337,7 +349,7 @@ private fun ChooseWidgetAppDialog(
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(horizontal = 8.dp),
-            ) { Text(stringResource(R.string.widget_add_cancel)) }
+            ) { Text(stringResource(R.string.shortcut_add_cancel)) }
         }
     }
 }

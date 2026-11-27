@@ -92,6 +92,12 @@
             android:name=".LaunchWidgetPinReceiver"
             android:exported="false" />
 
+        <!-- Success callback for a Protected launch shortcut placed from inside Warden; only the
+             system calls it, through Warden's own PendingIntent. -->
+        <receiver
+            android:name=".LaunchShortcutPinReceiver"
+            android:exported="false" />
+
         <activity
             android:name=".ProtectedLaunchActivity"
             android:excludeFromRecents="true"

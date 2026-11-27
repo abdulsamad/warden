@@ -30,13 +30,13 @@
     <string name="guide_daily_pause">Need USB debugging in one of those apps? Tap Pause.</string>
     <string name="guide_daily_alert">If something doesn\'t come back, you get an alert. Turn it on in Settings.</string>
 
-    <!-- Protected launch widget -->
+    <!-- Protected launch (shortcut, or widget) -->
     <string name="guide_widget_title">Watched app still complains?</string>
-    <string name="guide_widget_lead">A few apps check before Warden can switch settings off, so opened from their own icon they still see them on. A Warden widget fixes this: it switches settings off first, then opens the app.</string>
-    <string name="guide_widget_add">Under Apps to watch, tap Add home screen widget and confirm.</string>
+    <string name="guide_widget_lead">A few apps check before Warden can switch settings off, so opened from their own icon they still see them on. A Warden shortcut fixes this: it switches settings off first, then opens the app.</string>
+    <string name="guide_widget_add">Under Apps to watch, tap Add home screen shortcut and confirm.</string>
     <string name="guide_widget_close">If the app is open, force stop it once: long-press its icon, tap App info, then Force stop.</string>
-    <string name="guide_widget_open">From then on, always open the app from that widget, not its own icon from the drawer or from Recents.</string>
-    <string name="guide_widget_note">Only needed for apps that still complain. Leaving the app restores everything as usual.</string>
+    <string name="guide_widget_open">From then on, always open the app from that shortcut, not its own icon from the drawer or from Recents.</string>
+    <string name="guide_widget_note">Only needed for apps that still complain. The shortcut usually has a small Warden badge and can go in a folder like any icon. Leaving the app restores everything as usual.</string>
 
     <!-- Pro tips -->
     <string name="guide_tips_title">Pro tips</string>
@@ -50,7 +50,7 @@
     <string name="guide_trouble_started">Check the top card says Watching. If it says Monitor off, tap Start monitor.</string>
     <string name="guide_trouble_restricted">Usage access greyed out? In Warden\'s app settings, tap the three-dot menu, then Allow restricted settings.</string>
     <string name="guide_trouble_listed">Make sure the app is in Apps to watch.</string>
-    <string name="guide_trouble_widget">App still complains? Add a Warden widget for it under Apps to watch, force stop the app once, then always open it from that widget, not its own icon from the drawer or from Recents.</string>
+    <string name="guide_trouble_widget">App still complains? Add a Warden shortcut for it under Apps to watch, force stop the app once, then always open it from that shortcut, not its own icon from the drawer or from Recents.</string>
     <string name="guide_trouble_a11y">Set accessibility back to All services.</string>
     <string name="guide_trouble_test">Run Test on this device again after big updates.</string>
     <string name="guide_trouble_root">Root or modified-system checks are beyond Warden.</string>

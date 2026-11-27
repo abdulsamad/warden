@@ -17,22 +17,24 @@
     <string name="widget_config_empty">No apps to watch yet. Add them in Warden, then add the widget again.</string>
     <string name="widget_config_open_warden">Open Warden</string>
 
-    <!-- From Apps to watch: placing a widget from inside Warden -->
-    <string name="widget_add">Add home screen widget</string>
-    <string name="widget_add_hint">App still complains? Add a Warden widget for it here and always open the app from that widget, not its own icon from the drawer or from Recents.</string>
-    <string name="widget_add_choose_title">Add a widget for</string>
-    <string name="widget_add_for_cd">Add %1$s widget</string>
-    <string name="widget_add_cancel">Cancel</string>
+    <!-- From Apps to watch: placing a Protected launch shortcut from inside Warden -->
+    <string name="shortcut_add">Add home screen shortcut</string>
+    <string name="shortcut_add_hint">App still complains? Add a Warden shortcut for it here and always open the app from that shortcut, not its own icon from the drawer or from Recents.</string>
+    <string name="shortcut_add_choose_title">Add a shortcut for</string>
+    <string name="shortcut_add_for_cd">Add %1$s shortcut</string>
+    <string name="shortcut_add_cancel">Cancel</string>
+    <string name="shortcut_add_done">%1$s shortcut added. If the app is open, force stop it once, then open it from the shortcut.</string>
+    <!-- When the launcher can't place shortcuts, the same button places a widget -->
     <string name="widget_add_done">%1$s widget added. If the app is open, force stop it once, then open it from the widget.</string>
 
-    <!-- When the launcher can't place widgets for an app -->
+    <!-- When the launcher can place neither shortcuts nor widgets for an app -->
     <string name="widget_manual_title">Add it from your home screen</string>
     <string name="widget_manual_step1">Long-press an empty spot on your home screen and tap Widgets.</string>
     <string name="widget_manual_step2">Find Warden and drag Protected launch onto the home screen.</string>
     <string name="widget_manual_step3">Pick the app.</string>
     <string name="widget_manual_done">Got it</string>
 
-    <!-- Tapping the widget when Warden can't protect: the app still opens, as its icon would -->
+    <!-- Tapping a widget or shortcut when Warden can't protect: the app still opens, as its icon would -->
     <string name="launch_not_installed">That app isn\'t installed anymore.</string>
     <string name="launch_cant_open">Can\'t open %1$s. It may be turned off in Settings.</string>
     <string name="launch_not_set_up">Warden isn\'t set up yet. Opening %1$s as usual.</string>

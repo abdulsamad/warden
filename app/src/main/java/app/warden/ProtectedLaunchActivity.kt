@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 
 /**
- * Invisible trampoline behind the Protected launch widget: switches a watched app's settings off,
- * THEN opens it. Some apps check Developer options within their first second; opened from their
- * own icon they beat the monitor's next poll and refuse to run. Here the monitor confirms the
- * settings are off before the app's process even starts.
+ * Invisible trampoline behind Protected launch widgets and shortcuts: switches a watched app's
+ * settings off, THEN opens it. Some apps check Developer options within their first second; opened
+ * from their own icon they beat the monitor's next poll and refuse to run. Here the monitor
+ * confirms the settings are off before the app's process even starts.
  *
  * It never writes settings itself. It asks [ForegroundMonitorService], which owns sessions,
  * snapshots and restore, so leaving the app restores exactly as usual. When Warden can't protect
@@ -144,5 +144,14 @@ class ProtectedLaunchActivity : ComponentActivity() {
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
+
+        /**
+         * What a Protected launch shortcut runs. Shortcuts need an action; with no widget id, an
+         * uninstalled app only gets a message, as a shortcut can't be pointed at another app.
+         */
+        fun shortcutIntent(context: Context, packageName: String): Intent =
+            Intent(context, ProtectedLaunchActivity::class.java)
+                .setAction(Intent.ACTION_MAIN)
+                .putExtra(EXTRA_PACKAGE, packageName)
     }
 }

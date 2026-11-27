@@ -36,6 +36,8 @@ flowchart TB
         NOTIF[Notification actions]
         WIDGET[LaunchWidgetProvider]
         PIN[LaunchWidgetPinReceiver]
+        SHORT[Protected launch shortcut]
+        SPIN[LaunchShortcutPinReceiver]
         PLA[ProtectedLaunchActivity]
     end
 
@@ -77,8 +79,10 @@ flowchart TB
     BOOT --> FMS
     WIDGET --> WS
     TVM -->|requestPin| PIN
+    TVM -->|requestPinShortcut| SPIN
     PIN -->|bind| WS
     WIDGET -->|tap| PLA
+    SHORT -->|tap| PLA
     PLA -->|protectLaunch| FMS
 
     FMS -->|poll| USM
@@ -110,7 +114,9 @@ flowchart TB
 | `BootReceiver` | On `BOOT_COMPLETED` / `MY_PACKAGE_REPLACED`: run Recovery, then restart the monitor if enabled. |
 | `LaunchWidgets` / `LaunchWidgetProvider` | The **Protected launch** home-screen widget: one watched app per widget, stored in `launch_widgets`, drawn as the app's icon with a Warden badge: 44 dp on phones, 56 dp on tablets and unfolded foldables (`values-sw600dp`). On Android 12+ it also offers an icon-only size, which the launcher uses when a cell is too short for the name, so nothing is clipped. The provider redraws on `APPWIDGET_UPDATE` and on options changes (`onAppWidgetOptionsChanged`): after Warden is updated, One UI drops the drawn widget and sends only the options broadcast, so without that redraw the widget stayed the bare "Your app" placeholder, which does nothing when tapped. See [Protected launch](#protected-launch-widget). |
 | `LaunchWidgetPinReceiver` | Not exported. Success callback for a widget placed from inside Warden: binds the new widget id to its app and reports it on `LaunchWidgets.added`. |
-| `ProtectedLaunchActivity` | Invisible trampoline behind the widget: asks the service to protect the app, waits for `Protecting`, then opens it. Never writes settings itself. |
+| `LaunchShortcuts` | The **Protected launch** home-screen shortcut: a pinned shortcut whose intent opens one watched app through `ProtectedLaunchActivity`. Unlike a widget it can go in a launcher folder. Stores nothing; the intent carries the package. See [Adding a shortcut from inside Warden](#adding-a-shortcut-from-inside-warden). |
+| `LaunchShortcutPinReceiver` | Not exported. Success callback for a shortcut placed from inside Warden: reports the app's label on `LaunchShortcuts.added`. |
+| `ProtectedLaunchActivity` | Invisible trampoline behind the widget and the shortcut: asks the service to protect the app, waits for `Protecting`, then opens it. Never writes settings itself. |
 | `LaunchWidgetConfigActivity` (ui) | Picks the widget's app from the watched apps, when it is placed or when its app is gone. |
 
 ### Data model
@@ -249,7 +255,7 @@ Runs inside `withContext(NonCancellable)` so a restore always finishes, even whi
 
 ### Protected launch (widget)
 
-Polling has a blind spot. An app that checks Developer options in the first half second of a cold start (some Flutter apps do exactly this) always beats the next 750 ms poll, sees the settings on and refuses to run. Reopening it loses the same race. The **Protected launch** widget closes the gap by switching the settings off before the app starts.
+Polling has a blind spot. An app that checks Developer options in the first half second of a cold start (some Flutter apps do exactly this) always beats the next 750 ms poll, sees the settings on and refuses to run. Reopening it loses the same race. **Protected launch** closes the gap by switching the settings off before the app starts. It comes as a home-screen shortcut (what Warden places from Apps to watch) or a widget (from the launcher's widget list, or where the launcher can't pin shortcuts); both open the same trampoline, so everything below applies to both.
 
 ```mermaid
 sequenceDiagram
@@ -259,7 +265,7 @@ sequenceDiagram
     participant S as ForegroundMonitorService
     participant A as Target app
 
-    U->>P: tap widget (PendingIntent with the package)
+    U->>P: tap shortcut or widget (intent with the package)
     P->>P: blockers? permission, monitor on, watched, not paused
     P->>S: protectLaunch(package)
     S->>S: launch hold = package (10 s max)
@@ -271,19 +277,29 @@ sequenceDiagram
 ```
 
 - `ProtectedLaunchActivity` is an invisible trampoline: translucent, no animation, its own task (empty `taskAffinity`), no history. It never writes settings. It asks the service, which owns sessions, snapshots and restore, so enter, crash safety and restore are the ordinary paths.
-- It waits for `MonitorStatus` to report `Protecting(package)` for up to 2 s, then opens the app regardless. Once protected, it also waits (up to 1 s, read-only) until the adb daemon reports stopped (`init.svc.adbd`): Android stops it a moment after debugging is switched off, and an app that looks for it as it opens would still find it. No wait while debugging is still on. A timeout or a blocker (no permission, monitor off, paused, not watched) shows a toast and opens the app as its icon would, so the widget is never worse than the icon.
-- **An app still in memory.** The launcher flags bring its existing task forward instead of starting it again, so coming back after leaving (when the settings were restored) is protected the same way: off first, then resumed. Reopening from Recents can't be protected: nothing of Warden's runs before the app resumes, and the poll only sees it afterwards, so an app that re-checks on resume catches the settings on. That is why the copy says to open these apps from the widget, not Recents. It also says to force stop the app once after adding its widget: if it is running then, it was opened from its icon and may already have caught the settings on (shown as a warning, or kept in memory), and bringing that process forward doesn't re-run a check that already ran. Force stop rather than a Recents swipe, which usually ends the process but not on every phone.
+- It waits for `MonitorStatus` to report `Protecting(package)` for up to 2 s, then opens the app regardless. Once protected, it also waits (up to 1 s, read-only) until the adb daemon reports stopped (`init.svc.adbd`): Android stops it a moment after debugging is switched off, and an app that looks for it as it opens would still find it. No wait while debugging is still on. A timeout or a blocker (no permission, monitor off, paused, not watched) shows a toast and opens the app as its icon would, so a shortcut or widget is never worse than the icon.
+- **An app still in memory.** The launcher flags bring its existing task forward instead of starting it again, so coming back after leaving (when the settings were restored) is protected the same way: off first, then resumed. Reopening from Recents can't be protected: nothing of Warden's runs before the app resumes, and the poll only sees it afterwards, so an app that re-checks on resume catches the settings on. That is why the copy says to open these apps from the shortcut, not Recents. It also says to force stop the app once after adding its shortcut: if it is running then, it was opened from its icon and may already have caught the settings on (shown as a warning, or kept in memory), and bringing that process forward doesn't re-run a check that already ran. Force stop rather than a Recents swipe, which usually ends the process but not on every phone.
 - **The launch hold.** Between the tap and the app's own foreground event, the polled foreground app is the launcher or Warden, which would make `evaluate` restore straight away. While the hold is set, `evaluate` treats the held package as in front. The hold ends when a foreground event for that package arrives that is newer than the hold (one from before the tap does not count), after `LAUNCH_HOLD_MS` (10 s) on the monotonic clock, or on screen off. It lives in memory only and is never persisted, so a new process starts without one, and a clock change can never stretch it.
 - Pause and the watch list still apply: a held package that isn't watched, or a paused monitor, protects nothing.
-- Each widget is bound to one package in the `launch_widgets` DataStore. The picker lists only watched apps, and because it is exported for launchers it only accepts widget ids that belong to Warden's provider. A widget whose app was uninstalled shows **Choose app** and reopens the picker.
+- Each widget is bound to one package in the `launch_widgets` DataStore. The picker lists only watched apps, and because it is exported for launchers it only accepts widget ids that belong to Warden's provider. A widget whose app was uninstalled shows **Choose app** and reopens the picker. A shortcut can't be redrawn or repointed, so tapping one whose app was uninstalled only says so.
+
+#### Adding a shortcut from inside Warden
+
+**Add home screen shortcut** (Apps to watch) calls `LaunchShortcuts.requestPin`, which is `ShortcutManagerCompat.requestPinShortcut` (androidx.core) with:
+- id `launch_<package>` and the app's label;
+- an intent to `ProtectedLaunchActivity` (`ACTION_MAIN`, since shortcuts need an action) with the package as an extra. The launcher starts it as Warden through `LauncherApps`, so the activity stays unexported;
+- the app's own icon. An `AdaptiveIconDrawable` goes in unmasked at full layer size (`createWithAdaptiveBitmap`), so the launcher shapes it like any icon instead of shrinking it onto a plain background. Warden draws no badge: Launcher3-based launchers badge a pinned shortcut with the publisher's icon themselves, which tells it apart from the app's own icon (checked on a Moto launcher). A badge of Warden's own would show twice there;
+- an explicit, immutable success-callback `PendingIntent` to `LaunchShortcutPinReceiver`, one per package, which emits the label on `LaunchShortcuts.added` for the same snackbar as the widget.
+
+This is the default because launchers keep widgets on the grid but let a shortcut into a folder. If the launcher can't pin shortcuts or refuses, the button falls back to the widget below, and if that fails too, to the manual widget steps.
 
 #### Adding a widget from inside Warden
 
-**Add home screen widget** (Apps to watch) calls `LaunchWidgets.requestPin`, which is `AppWidgetManager.requestPinAppWidget` with:
+The fallback calls `LaunchWidgets.requestPin`, which is `AppWidgetManager.requestPinAppWidget` with:
 - an `EXTRA_APPWIDGET_PREVIEW` built from the same `RemoteViews` as the real widget, so the launcher's dialog shows the app's own icon and name;
 - an explicit, mutable success-callback `PendingIntent` to `LaunchWidgetPinReceiver`, one per package. It is mutable because the system adds `EXTRA_APPWIDGET_ID` to it, which needs `FLAG_MUTABLE` from Android 12, and explicit because Android 14 forbids mutable implicit ones.
 
-Launchers skip the widget's picker for an app-requested pin (Launcher3's `PinWidgetFlowHandler.needsConfigure()` is false), so the receiver is the only place the app gets set. It checks the id is Warden's, binds it, and emits the label on `LaunchWidgets.added`. That is an in-process `SharedFlow` like `MonitorStatus`, which `TargetsSection` turns into a snackbar. In case a launcher opens the picker anyway, the receiver marks the id as freshly pinned (in memory, and only once the bind succeeded) and the picker accepts and closes once within 10 s. Reconfiguring the widget after that still shows the picker. Store reads and writes with their render go through one `Mutex`: a pin sends `APPWIDGET_UPDATE` and then the callback, both handled in the background, and unserialized the update could draw "Choose app" over the freshly bound widget. With one watched app the button pins straight away; with several, a chooser dialog asks first and pins only after its own exit, so two dialogs never overlap. If `isRequestPinAppWidgetSupported` is false, or the launcher refuses, a dialog shows the manual steps.
+Launchers skip the widget's picker for an app-requested pin (Launcher3's `PinWidgetFlowHandler.needsConfigure()` is false), so the receiver is the only place the app gets set. It checks the id is Warden's, binds it, and emits the label on `LaunchWidgets.added`. That is an in-process `SharedFlow` like `MonitorStatus`, which `TargetsSection` turns into a snackbar. In case a launcher opens the picker anyway, the receiver marks the id as freshly pinned (in memory, and only once the bind succeeded) and the picker accepts and closes once within 10 s. Reconfiguring the widget after that still shows the picker. Store reads and writes with their render go through one `Mutex`: a pin sends `APPWIDGET_UPDATE` and then the callback, both handled in the background, and unserialized the update could draw "Choose app" over the freshly bound widget. With one watched app the button pins straight away; with several, a chooser dialog asks first and pins only after its own exit, so two dialogs never overlap. If neither `isRequestPinShortcutSupported` nor `isRequestPinAppWidgetSupported` is true, or the launcher refuses both, a dialog shows the manual widget steps.
 
 ### Edge cases
 

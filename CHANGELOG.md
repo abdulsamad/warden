@@ -8,8 +8,12 @@ All notable changes to Warden are listed here. The format follows
 
 ### Added
 
-- A short message when your settings come back 15 seconds after you leave a watched app: "Warden restored your settings after you left ...". Going back to the app after that may need its widget. Turning the screen off, pausing or opening Warden still restores without one.
+- A short message when your settings come back 15 seconds after you leave a watched app: "Warden restored your settings after you left ...". Going back to the app after that may need its shortcut. Turning the screen off, pausing or opening Warden still restores without one.
 - While you're away from a watched app, the status notification counts down to the restore.
+
+### Changed
+
+- Apps to watch now adds a home screen shortcut instead of a widget: Add home screen shortcut. It protects the launch the same way, and unlike a widget it can go in a folder, so you can keep all your protected apps together. Launchers that can't add shortcuts still get a widget, and widgets you already have keep working.
 
 ### Fixed
 

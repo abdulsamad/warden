@@ -96,7 +96,7 @@ private val sections = listOf(
             R.string.guide_daily_alert,
         ),
     ),
-    // Why the widget exists and how to use it, right after everyday use: the one case where
+    // Why Protected launch exists and how to use it, right after everyday use: the one case where
     // opening an app as usual is not enough.
     GuideSection(
         R.string.guide_widget_title,

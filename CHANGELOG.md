@@ -6,6 +6,11 @@ All notable changes to Warden are listed here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- A short message when your settings come back 15 seconds after you leave a watched app: "Warden restored your settings after you left ...". Going back to the app after that may need its widget. Turning the screen off, pausing or opening Warden still restores without one.
+- While you're away from a watched app, the status notification counts down to the restore.
+
 ## [1.1.0] - 2026-11-19
 
 ### Changed

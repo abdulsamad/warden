@@ -26,7 +26,7 @@ Warden does it for you:
 
 1. You pick the **apps to watch** and **what to switch off**.
 2. When a watched app comes to the front, Warden **really switches those settings off**. Nothing is spoofed or hidden - the app sees a clean phone because it is one.
-3. About 15 seconds after you leave the app (or as soon as the screen turns off), Warden **restores the exact previous state**: the same accessibility services, in the same order, and anything that was already off stays off.
+3. About 15 seconds after you leave the app (or as soon as the screen turns off), Warden **restores the exact previous state**: the same accessibility services, in the same order, and anything that was already off stays off. A short message tells you when those 15 seconds are up, and the status notification counts them down.
 
 ## ✨ Features
 

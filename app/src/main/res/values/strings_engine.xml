@@ -28,6 +28,9 @@
     <string name="engine_action_resume">Resume</string>
     <string name="engine_action_hide">Hide</string>
 
+    <!-- Toast when settings come back after the leave grace period -->
+    <string name="engine_toast_restored">Warden restored your settings after you left %1$s</string>
+
     <!-- Alerts (only posted when something fails) -->
     <string name="engine_alert_disable_title">Protection incomplete</string>
     <string name="engine_alert_disable_text">Couldn\'t turn off %1$s while %2$s is open</string>

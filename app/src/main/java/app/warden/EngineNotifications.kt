@@ -6,15 +6,16 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.text.format.DateFormat
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import app.warden.ui.MainActivity
 import java.util.Date
 
 /**
- * Channels, ids and text for the engine's notifications. The ongoing notification (owned by the
- * service) is IMPORTANCE_LOW; the separate Alerts channel is used only when something fails.
- * Every notify call is guarded because notifications may be denied.
+ * Channels, ids and text for the engine's notifications, plus its one toast. The ongoing
+ * notification (owned by the service) is IMPORTANCE_LOW; the separate Alerts channel is used only
+ * when something fails. Every notify call is guarded because notifications may be denied.
  */
 object EngineNotifications {
     const val CHANNEL_MONITOR = "monitor"
@@ -116,6 +117,24 @@ object EngineNotifications {
         context.getString(R.string.engine_alert_reset_title),
         context.getString(R.string.engine_alert_reset_text),
     )
+
+    // --- toast ---
+
+    /**
+     * Says the settings came back after the leave grace period ran out: the only restore that
+     * happens out of sight, seconds after the user left. Other restores get none: on screen off
+     * nobody is looking, and pausing or opening Warden is the user's own doing. Posted to the
+     * main thread so a transition never waits on it; Android may drop it if Warden's
+     * notifications are blocked.
+     */
+    fun showRestoredToast(context: Context, appLabel: String) {
+        val app = context.applicationContext
+        ContextCompat.getMainExecutor(app).execute {
+            runCatching {
+                Toast.makeText(app, app.getString(R.string.engine_toast_restored, appLabel), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     fun cancelDisableAlert(context: Context) = cancel(context, ID_ALERT_DISABLE)
 

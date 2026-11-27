@@ -463,7 +463,15 @@ class ForegroundMonitorService : Service() {
                 foreground != packageName && current.packageName in cfg.targetPackages
             when {
                 activeSnapshot == null -> Unit
-                !linger || graceExpired() -> leave()
+                !linger -> leave()
+                graceExpired() -> {
+                    // The one restore that happens out of sight, seconds after the user left. Say
+                    // so, or going back to the app feels like it works only some of the time.
+                    val failed = leave()
+                    if (failed.isEmpty() && current!!.disabled.isNotEmpty()) {
+                        EngineNotifications.showRestoredToast(this, current.appLabel)
+                    }
+                }
                 leaveDeadline == 0L -> {
                     leaveDeadline = SystemClock.elapsedRealtime() + LEAVE_GRACE_MS
                     publish(current!!.state(leaving = true))
@@ -526,12 +534,15 @@ class ForegroundMonitorService : Service() {
         }
     }
 
-    /** Restores the active snapshot. Must be called with [SettingsController.lock] held. */
-    private suspend fun leave() {
-        val snapshot = activeSnapshot ?: return
+    /**
+     * Restores the active snapshot and returns the protections that did not come back (none if
+     * there was nothing to restore). Must be called with [SettingsController.lock] held.
+     */
+    private suspend fun leave(): Set<Protection> {
+        val snapshot = activeSnapshot ?: return emptySet()
         val recovered = adopted
         // Restore must finish even if the service scope is being cancelled.
-        withContext(NonCancellable) {
+        return withContext(NonCancellable) {
             val alreadyRecovered = recovered && !runCatching { store.snapshot.first().active }.getOrDefault(true)
             val failed = if (alreadyRecovered) {
                 emptySet() // Recovery.restorePending got here first and already reported.
@@ -556,6 +567,7 @@ class ForegroundMonitorService : Service() {
                 runCatching { log.recordLeave(failed, recovered) }
                 if (recovered) MonitorStatus.reportRecovery(failed)
             }
+            failed
         }
     }
 
@@ -602,6 +614,10 @@ class ForegroundMonitorService : Service() {
             MainActivity.openIntent(this),
             PendingIntent.FLAG_IMMUTABLE,
         )
+        // While the user is away from a watched app, Android's own timer counts down to the
+        // restore. Wall clock, as the notification needs, taken from the monotonic deadline.
+        val restoreAt = leaveDeadline.takeIf { it != 0L && state is MonitorState.Protecting && state.leaving }
+            ?.let { System.currentTimeMillis() + (it - SystemClock.elapsedRealtime()) }
         val builder = NotificationCompat.Builder(this, EngineNotifications.CHANNEL_MONITOR)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(
@@ -614,8 +630,9 @@ class ForegroundMonitorService : Service() {
             // Not ongoing: on Android 13+ the user can swipe it away while the service keeps running.
             .setDeleteIntent(serviceIntent(ACTION_NOTIFICATION_DISMISSED, REQUEST_DISMISSED))
             .setOnlyAlertOnce(true)
-            .setShowWhen(false)
+            .setShowWhen(restoreAt != null)
             .setContentIntent(open)
+        restoreAt?.let { builder.setUsesChronometer(true).setChronometerCountDown(true).setWhen(it) }
         when (state) {
             null, MonitorState.Stopped -> Unit
             is MonitorState.Paused ->

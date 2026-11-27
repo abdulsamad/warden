@@ -6,6 +6,8 @@ All notable changes to Warden are listed here. The format follows
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-27
+
 ### Added
 
 - A short message when your settings come back 15 seconds after you leave a watched app: "Warden restored your settings after you left ...". Going back to the app after that may need its shortcut. Turning the screen off, pausing or opening Warden still restores without one.

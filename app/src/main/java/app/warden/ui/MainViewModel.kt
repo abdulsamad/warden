@@ -26,9 +26,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 data class A11yService(val id: String, val label: String)
 
@@ -98,6 +102,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private val _currentValues = MutableStateFlow<DeviceValues?>(null)
     val currentValues = _currentValues.asStateFlow()
 
+    /** Serializes device reads: each read happens inside the lock, so an older one never lands last. */
+    private val valuesLock = Mutex()
+
+    init {
+        // The monitor switches settings off and back while this screen may be open: opening Warden
+        // from a watched app restores just after onResume has read them, and a monitor started
+        // after a crash restore publishes once it runs. It publishes after writing, so re-read on
+        // each change, or "On now" and "Already off" contradict the device until the next resume.
+        viewModelScope.launch {
+            MonitorStatus.state.drop(1).collect { refreshDeviceValues() }
+        }
+    }
+
     /**
      * True once what the main screen opens on has been read: saved config, the activity log and the
      * live device values. Until then [config] and [records] hold defaults (monitor off, no log).
@@ -141,9 +158,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Re-reads the installed accessibility services and the live device values. */
     fun refreshDeviceState() = viewModelScope.launch(Dispatchers.IO) {
+        _a11yServices.value = loadAccessibilityServices(getApplication())
+        refreshDeviceValues()
+    }
+
+    private suspend fun refreshDeviceValues() = withContext(Dispatchers.IO) {
         val ctx = getApplication<Application>()
-        _a11yServices.value = loadAccessibilityServices(ctx)
-        _currentValues.value = readDeviceValues(ctx)
+        valuesLock.withLock { _currentValues.value = readDeviceValues(ctx) }
     }
 
     private fun loadAccessibilityServices(ctx: Context): List<A11yService> {
@@ -224,7 +245,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             } catch (e: Exception) {
                 SelfTestUiState.Failed
             }
-            _currentValues.value = readDeviceValues(ctx)
+            refreshDeviceValues()
         }
     }
 
